@@ -1,22 +1,28 @@
 package org.pathpal;
-/**
- * 
- */
-import android.app.Activity;
-import android.os.Bundle;
-import android.widget.TextView;
 
-/**
- * @author phyrex1an
- *
- */
-public class PathPal extends Activity {
-    /** Called when the activity is first created. */
+import android.os.Bundle;
+import com.google.android.maps.MapActivity;
+import com.google.android.maps.MapView;
+
+public class PathPal extends MapActivity {
+    
+    private MapView mapView;
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        
         super.onCreate(savedInstanceState);
-        TextView tv = new TextView(this);
-        tv.setText("Hello, PathPal");
-        setContentView(tv);
+        setContentView(R.layout.main);
+        
+        mapView = (MapView) findViewById(R.id.map_view);       
+        mapView.setBuiltInZoomControls(true);
+        
     }
+
+    @Override
+    protected boolean isRouteDisplayed() {
+        return false;
+    }
+    
 }
+
