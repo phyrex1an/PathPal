@@ -3,6 +3,8 @@ package org.pathpal;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -11,6 +13,12 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.preference.EditTextPreference;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.widget.EditText;
+
 
 import com.amelie.driving.DrivingDirections;
 import com.amelie.driving.Placemark;
@@ -148,6 +156,82 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener {
 	        canvas.drawPath(path, mPaint);
 	    }
 	    
+	}
+	
+	// define the menu from the XML
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.gmapmenu, menu);
+	    return true;
+	}
+	
+	// method to handle a button action
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    // Handle item selection
+	    switch (item.getItemId()) {
+	    case R.id.exit:
+	    	showDialog(DIALOG_EXIT_ID);
+	        return true;
+	    case R.id.find_path:
+	    	showDialog(DIALOG_FIND_PATH_ID);
+	    	return true;
+	    default:
+	        return super.onOptionsItemSelected(item);
+	    }
+	}
+	
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		// TODO Auto-generated method stub
+		return super.onCreateDialog(id);
+	}
+	
+	static final int DIALOG_FIND_PATH_ID = 0;
+	static final int DIALOG_EXIT_ID      = 1;
+	
+	@Override
+	protected Dialog onCreateDialog(int id, Bundle args) {
+		Dialog dialog;
+		
+		switch(id){
+		case DIALOG_EXIT_ID:
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setMessage("Are you sure you want to exit?")
+			       .setCancelable(false)
+			       .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+			           public void onClick(DialogInterface dialog, int id) {
+			                GMapsActivity.this.finish();
+			           }
+			       })
+			       .setNegativeButton("No", new DialogInterface.OnClickListener() {
+			           public void onClick(DialogInterface dialog, int id) {
+			                dialog.cancel();
+			           }
+			       });
+			AlertDialog alert = builder.create();
+			dialog = alert;
+			break;
+			
+		case DIALOG_FIND_PATH_ID:
+			AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
+			EditText startInput = new EditText(this);
+			//EditText endInput   = new EditText(this);
+			builder2.setView(startInput);
+			//builder2.setView(endInput);
+			builder2.setTitle("Please give start and end position");
+			
+			//create dialog and set dialog to the alert dialog
+			alert = builder2.create();
+			dialog = alert;
+			break;
+		//	dialog = null;
+			
+			default:
+				dialog= null;
+		}
+		return dialog;
 	}
 
 }
