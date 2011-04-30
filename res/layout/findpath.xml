@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:orientation="vertical" >
+  
+  
+  <TextView
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:textColor="#FFFFFF"
+    android:text="Find a path" />
+
+   <EditText
+ 	android:id="@+id/from"
+ 	android:hint="From location"
+ 	android:layout_width="fill_parent"
+ 	android:layout_height="55px"
+   />
+   <EditText
+ 	android:id="@+id/to"
+ 	android:hint="To location"
+    android:layout_width="fill_parent"
+ 	android:layout_height="55px"
+   />    
+   
+   <EditText
+ 	android:id="@+id/nl_input"
+ 	android:hint="Find the path using natural langugage =)"
+    android:layout_width="fill_parent"
+ 	android:layout_height="55px"
+   />       
+       
+  <Button android:text="Find"
+        android:id="@+id/FindBtn"
+        android:layout_width="fill_parent"
+        android:textSize="18px"
+        android:layout_height="55px" />
+
+</LinearLayout>

@@ -6,6 +6,7 @@ import java.util.List;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -13,15 +14,11 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.preference.EditTextPreference;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.EditText;
-
 
 import com.amelie.driving.DrivingDirections;
-import com.amelie.driving.Placemark;
 import com.amelie.driving.Route;
 import com.amelie.driving.DrivingDirections.IDirectionsListener;
 import com.amelie.driving.DrivingDirections.Mode;
@@ -52,21 +49,11 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener {
 		mapView = (MapView) findViewById(R.id.map_view);
 		mapView.setBuiltInZoomControls(true);
 		
-		List<Overlay> mapOverlays = mapView.getOverlays();
 		projection = mapView.getProjection();
 		
 		
 		GeoPoint point = new GeoPoint(latitudeE6, longitudeE6);
-		/*
-		Drawable drawable = this.getResources().getDrawable(R.drawable.icon);
-		itemizedOverlay = new CustomItemizedOverlay(drawable, this);
-		
-		
-		OverlayItem overlayitem = new OverlayItem(point, "hello", "im in athens, greece");
-		
-		itemizedOverlay.addOverlay(overlayitem);
-		mapOverlays.add(itemizedOverlay); */
-//      mapOverlays.add(new PathOverlay());
+
 		MapController mapController = mapView.getController();
 		
 		mapController.animateTo(point);
@@ -91,13 +78,9 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener {
 
 	public void onDirectionsAvailable(Route route, Mode mode) {
 		List<GeoPoint> gps = route.getGeoPoints();
-//		List<Placemark> pl = route.getPlacemarks();
-	
+
 		List<Overlay> mapOverlays = mapView.getOverlays();
-/*		Drawable drawable = this.getResources().getDrawable(R.drawable.icon);
-		CustomItemizedOverlay itemizedOverlay = new CustomItemizedOverlay(drawable, this);
-		
-*/
+
 		Drawable drawable = this.getResources().getDrawable(R.drawable.icon);
 		itemizedOverlay = new CustomItemizedOverlay(drawable, this);
 		
@@ -120,7 +103,6 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener {
 		
 		private GeoPoint first;
 		private List<GeoPoint> points;
-		//Projection 	private Projection projection;
 		
 	    public PathOverlay(List<GeoPoint> points) {
 	    	this.points = new ArrayList<GeoPoint>(points);
@@ -166,7 +148,10 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener {
 	    return true;
 	}
 	
-	// method to handle a button action
+	
+	 static final int FIND_PATH_REQUEST_CODE = 0;
+	 
+	// method to handle a menu button action
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 	    // Handle item selection
@@ -175,26 +160,41 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener {
 	    	showDialog(DIALOG_EXIT_ID);
 	        return true;
 	    case R.id.find_path:
-	    	showDialog(DIALOG_FIND_PATH_ID);
+	    	Intent myIntent = new Intent(this, GMapsFindPathActivity.class);
+	    	System.out.println("================================ HELLOO _======== ");
+	    	startActivityForResult(myIntent, FIND_PATH_REQUEST_CODE);
 	    	return true;
 	    default:
 	        return super.onOptionsItemSelected(item);
 	    }
 	}
 	
+	
+	// Called when an activity you launched exits, 
+	//giving you the requestCode you started it with, 
+	//the resultCode it returned, 
+	//and any additional data from it
 	@Override
-	protected Dialog onCreateDialog(int id) {
-		// TODO Auto-generated method stub
-		return super.onCreateDialog(id);
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if(requestCode == FIND_PATH_REQUEST_CODE){
+			Bundle d = data.getExtras();
+			String from = d.get("from").toString();
+			String to   = d.get("to").toString();
+			
+			// DO SOMETHING WITH THE RESULT FROM FIND_PATH
+			
+			System.out.println("====================");
+			System.out.println(from + " " + to);
+			System.out.println("====================");
+		}
+			
+		super.onActivityResult(requestCode, resultCode, data);
 	}
 	
-	static final int DIALOG_FIND_PATH_ID = 0;
 	static final int DIALOG_EXIT_ID      = 1;
-	
 	@Override
 	protected Dialog onCreateDialog(int id, Bundle args) {
 		Dialog dialog;
-		
 		switch(id){
 		case DIALOG_EXIT_ID:
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -213,21 +213,6 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener {
 			AlertDialog alert = builder.create();
 			dialog = alert;
 			break;
-			
-		case DIALOG_FIND_PATH_ID:
-			AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
-			EditText startInput = new EditText(this);
-			//EditText endInput   = new EditText(this);
-			builder2.setView(startInput);
-			//builder2.setView(endInput);
-			builder2.setTitle("Please give start and end position");
-			
-			//create dialog and set dialog to the alert dialog
-			alert = builder2.create();
-			dialog = alert;
-			break;
-		//	dialog = null;
-			
 			default:
 				dialog= null;
 		}
