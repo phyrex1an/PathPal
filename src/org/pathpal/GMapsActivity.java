@@ -37,42 +37,28 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener {
 	private Projection projection;
 	private CustomItemizedOverlay itemizedOverlay;
 	
-	private static final int latitudeE6 = 37985339;
-	private static final int longitudeE6= 23716735;
-	
 	@Override
-	public void onCreate(Bundle savedInstanceState){
-		
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.gmapslayout);
 		
 		mapView = (MapView) findViewById(R.id.map_view);
 		mapView.setBuiltInZoomControls(true);
-		
 		projection = mapView.getProjection();
 		
-		
-		GeoPoint point = new GeoPoint(latitudeE6, longitudeE6);
-
-		MapController mapController = mapView.getController();
-		
-		mapController.animateTo(point);
-		
-		
 		DrivingDirections dd = new DrivingDirectionsGoogleKML();
-		GeoPoint gp          = new GeoPoint(37985339, 23716735);
-		GeoPoint gp2         = new GeoPoint(38036160, 23787610);
+		GeoPoint gp_start          = new GeoPoint(37985339, 23716735);
+		GeoPoint gp_end         = new GeoPoint(38036160, 23787610);
+		dd.driveTo(gp_start, gp_end, Mode.DRIVING, this);
 		
-		dd.driveTo(gp, gp2, Mode.DRIVING, this);
-		
-		mapController.animateTo(point);
+		MapController mapController = mapView.getController();
+		mapController.animateTo(gp_start);
 		mapController.setZoom(10);
-		
 	}
 	
 	@Override
 	protected boolean isRouteDisplayed() {
-		// TODO Auto-generated method stub
+		// Auto-generated method stub
 		return false;
 	}
 
@@ -84,8 +70,7 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener {
 		Drawable drawable = this.getResources().getDrawable(R.drawable.icon);
 		itemizedOverlay = new CustomItemizedOverlay(drawable, this);
 		
-		GeoPoint point = new GeoPoint(latitudeE6, longitudeE6);
-		OverlayItem overlayitem = new OverlayItem(point, "hello", gps.size()+"");
+		OverlayItem overlayitem = new OverlayItem(gps.get(0), "hello", gps.size()+"");
 		
 		itemizedOverlay.addOverlay(overlayitem);
 		mapOverlays.add(itemizedOverlay);
@@ -95,7 +80,7 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener {
 	}
 
 	public void onDirectionsNotAvailable() {
-		// TODO Auto-generated method stub
+		// Auto-generated method stub
 		throw new RuntimeException();
 	}
 	
@@ -151,7 +136,7 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener {
 	
 	 static final int FIND_PATH_REQUEST_CODE = 0;
 	 
-	// method to handle a menu button action
+	// method to handle a menu button action when you press the menu button
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 	    // Handle item selection
@@ -161,7 +146,6 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener {
 	        return true;
 	    case R.id.find_path:
 	    	Intent myIntent = new Intent(this, GMapsFindPathActivity.class);
-	    	System.out.println("================================ HELLOO _======== ");
 	    	startActivityForResult(myIntent, FIND_PATH_REQUEST_CODE);
 	    	return true;
 	    default:
@@ -177,21 +161,25 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if(requestCode == FIND_PATH_REQUEST_CODE){
-			Bundle d = data.getExtras();
-			String from = d.get("from").toString();
-			String to   = d.get("to").toString();
-			
-			// DO SOMETHING WITH THE RESULT FROM FIND_PATH
-			
-			System.out.println("====================");
-			System.out.println(from + " " + to);
-			System.out.println("====================");
+			System.out.println(resultCode + " <-- resultCode");
+			if(resultCode!=RESULT_CANCELED){
+				Bundle d = data.getExtras();
+				String from = d.get("from").toString();
+				String to   = d.get("to").toString();
+				
+				// DO SOMETHING WITH THE RESULT FROM FIND_PATH
+				
+				// output the user input to log
+				System.out.println("====================");
+				System.out.println(from + " " + to);
+				System.out.println("====================");
+			}
 		}
 			
 		super.onActivityResult(requestCode, resultCode, data);
 	}
 	
-	static final int DIALOG_EXIT_ID      = 1;
+	static final int DIALOG_EXIT_ID = 1;
 	@Override
 	protected Dialog onCreateDialog(int id, Bundle args) {
 		Dialog dialog;

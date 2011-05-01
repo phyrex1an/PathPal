@@ -25,8 +25,8 @@ public class GMapsFindPathActivity extends Activity {
                 setResult(RESULT_OK, intent);
                 finish();
             }
-
         });
         
     }
+    
 }
