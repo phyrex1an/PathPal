@@ -18,6 +18,7 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
+import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
@@ -81,6 +82,18 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener {
 				System.out.println("=======================" + a.getFeatureName());	
 				System.out.println("=======================" + a.getFeatureName());	
 				System.out.println("=======================" + a.getFeatureName());	
+			}
+
+			System.out.println("Getting current location");
+			LocationManager lm = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+			if (lm == null) System.out.println("lm is null");
+			Location l = lm.getLastKnownLocation(lm.getBestProvider(new Criteria(), true));
+			if (l == null) System.out.println("l is null");
+			double lon = l.getLongitude();
+			double lat = l.getLatitude();
+			System.out.println("Printing current location");
+			for (Address adr : gc.getFromLocation(lat, lon, 1)) {
+				System.out.println(adr.getAddressLine(0) + "; " + adr.getAddressLine(1));
 			}
 			
 		} catch (IOException e) {
@@ -216,8 +229,16 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener {
 				Address fromAddress = null;
 				Address toAddress   = null;
 				try {
-					fromAddress = gc.getFromLocationName(from, 1).remove(0);
-					toAddress   = gc.getFromLocationName(to, 1).remove(0);
+					LocationManager lm = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+					Location l = lm.getLastKnownLocation(lm.getBestProvider(null, true));
+					if (l == null) {
+						
+					}
+					double lon = l.getLongitude();
+					double lat = l.getLatitude();
+					gc.getFromLocation(lat, lon, 1).remove(0);
+					fromAddress = gc.getFromLocationName(from, 1, lat+1, lon-1, lat-1, lon+1).remove(0);
+					toAddress   = gc.getFromLocationName(from, 1, lat+1, lon-1, lat-1, lon+1).remove(0);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
