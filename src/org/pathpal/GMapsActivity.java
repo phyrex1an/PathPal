@@ -121,7 +121,11 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener {
 
 	public void onDirectionsNotAvailable() {
 		// Auto-generated method stub
-		throw new RuntimeException();
+		System.out.println("DIRECTIONS ARE NOT AVAILABLE!!!!!!!");
+		System.out.println("DIRECTIONS ARE NOT AVAILABLE!!!!!!!");
+		System.out.println("DIRECTIONS ARE NOT AVAILABLE!!!!!!!");
+		System.out.println("DIRECTIONS ARE NOT AVAILABLE!!!!!!!");
+		System.out.println("DIRECTIONS ARE NOT AVAILABLE!!!!!!!");
 	}
 	
 	public class PathOverlay extends Overlay {
@@ -208,6 +212,27 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener {
 				String to   = d.get("to").toString();
 				
 				// DO SOMETHING WITH THE RESULT FROM FIND_PATH
+				Geocoder gc = new Geocoder(getApplicationContext());
+				Address fromAddress = null;
+				Address toAddress   = null;
+				try {
+					fromAddress = gc.getFromLocationName(from, 1).remove(0);
+					toAddress   = gc.getFromLocationName(to, 1).remove(0);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+
+				final int convert = 1000000;
+				System.out.println("=================="  + fromAddress.getLatitude() + "===============" + (int) (fromAddress.getLatitude()*convert));
+				
+				
+				GeoPoint startPos = new GeoPoint((int) (fromAddress.getLatitude()*convert), (int) (fromAddress.getLongitude()*convert));
+				GeoPoint endPos   = new GeoPoint((int) (toAddress.getLatitude()*convert), (int) (toAddress.getLongitude() * convert) );
+				DrivingDirections dd = new DrivingDirectionsGoogleKML();
+				dd.driveTo(startPos, endPos, Mode.DRIVING, this);
+				mapController.animateTo(startPos);
 				
 				// output the user input to log
 				System.out.println("====================");
