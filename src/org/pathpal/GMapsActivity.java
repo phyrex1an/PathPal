@@ -1,24 +1,35 @@
 package org.pathpal;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+
 import com.amelie.driving.DrivingDirections;
+import com.amelie.driving.Placemark;
 import com.amelie.driving.Route;
 import com.amelie.driving.DrivingDirections.IDirectionsListener;
 import com.amelie.driving.DrivingDirections.Mode;
@@ -36,7 +47,11 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener {
 	private MapView mapView;
 	private Projection projection;
 	private CustomItemizedOverlay itemizedOverlay;
+	private GeoPoint gpsPoint;
+	private MapController mapController; 
 	
+	private List<Overlay> mapOverlays;
+		
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -50,11 +65,36 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener {
 		GeoPoint gp_start          = new GeoPoint(37985339, 23716735);
 		GeoPoint gp_end         = new GeoPoint(38036160, 23787610);
 		dd.driveTo(gp_start, gp_end, Mode.DRIVING, this);
+				
+		Geocoder gc = new Geocoder(getApplicationContext());
+		try {
+			System.out.println("HEJSAN");
+			List<Address> hej = gc.getFromLocationName("ullevi", 10);
+			for(Address a : hej){
+				System.out.println("=======================" + a.getAddressLine(0));	
+				System.out.println("=======================" + a.getAddressLine(1));	
+				System.out.println("=======================" + a.getAddressLine(2));	
+				System.out.println("=======================" + a.getFeatureName());	
+				System.out.println("=======================" + a.getFeatureName());	
+				System.out.println("=======================" + a.getFeatureName());	
+				System.out.println("=======================" + a.getFeatureName());	
+				System.out.println("=======================" + a.getFeatureName());	
+				System.out.println("=======================" + a.getFeatureName());	
+				System.out.println("=======================" + a.getFeatureName());	
+			}
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
-		MapController mapController = mapView.getController();
+		
+		mapController = mapView.getController();
 		mapController.animateTo(gp_start);
 		mapController.setZoom(10);
 	}
+	
+	
 	
 	@Override
 	protected boolean isRouteDisplayed() {
@@ -64,8 +104,8 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener {
 
 	public void onDirectionsAvailable(Route route, Mode mode) {
 		List<GeoPoint> gps = route.getGeoPoints();
-
-		List<Overlay> mapOverlays = mapView.getOverlays();
+		
+		mapOverlays = mapView.getOverlays();
 
 		Drawable drawable = this.getResources().getDrawable(R.drawable.icon);
 		itemizedOverlay = new CustomItemizedOverlay(drawable, this);
@@ -141,9 +181,9 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener {
 	public boolean onOptionsItemSelected(MenuItem item) {
 	    // Handle item selection
 	    switch (item.getItemId()) {
-	    case R.id.exit:
-	    	showDialog(DIALOG_EXIT_ID);
-	        return true;
+	//    case R.id.exit:
+	 //   	showDialog(DIALOG_EXIT_ID);
+	 //       return true;
 	    case R.id.find_path:
 	    	Intent myIntent = new Intent(this, GMapsFindPathActivity.class);
 	    	startActivityForResult(myIntent, FIND_PATH_REQUEST_CODE);
@@ -179,7 +219,7 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener {
 		super.onActivityResult(requestCode, resultCode, data);
 	}
 	
-	static final int DIALOG_EXIT_ID = 1;
+/*	static final int DIALOG_EXIT_ID = 1;
 	@Override
 	protected Dialog onCreateDialog(int id, Bundle args) {
 		Dialog dialog;
@@ -206,5 +246,5 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener {
 		}
 		return dialog;
 	}
-
+*/
 }
