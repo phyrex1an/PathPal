@@ -67,8 +67,15 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener {
 		GeoPoint gp_end         = new GeoPoint(38036160, 23787610);
 		dd.driveTo(gp_start, gp_end, Mode.DRIVING, this);
 				
-		Geocoder gc = new Geocoder(getApplicationContext());
+/*		Geocoder gc = new Geocoder(getApplicationContext());
 		try {
+			System.out.println("HEJSAN");
+			System.out.println("HEJSAN");
+			System.out.println("HEJSAN");
+			System.out.println("HEJSAN");
+			System.out.println("HEJSAN");
+			System.out.println("HEJSAN");
+			System.out.println("HEJSAN");
 			System.out.println("HEJSAN");
 			List<Address> hej = gc.getFromLocationName("ullevi", 10);
 			for(Address a : hej){
@@ -100,7 +107,7 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+*/		
 		
 		mapController = mapView.getController();
 		mapController.animateTo(gp_start);
@@ -224,21 +231,25 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener {
 				String from = d.get("from").toString();
 				String to   = d.get("to").toString();
 				
+				
+				
+				SearchApi api = new SearchApi();
+				api.geocoder = new Geocoder(getApplicationContext());
+				DirectionsForm directionForm = new DirectionsForm();
+				directionForm.startAtAddress(from);
+				directionForm.goToAddress(to);
+				
+				
+				
+				
 				// DO SOMETHING WITH THE RESULT FROM FIND_PATH
-				Geocoder gc = new Geocoder(getApplicationContext());
 				Address fromAddress = null;
 				Address toAddress   = null;
 				try {
-					LocationManager lm = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
-					Location l = lm.getLastKnownLocation(lm.getBestProvider(null, true));
-					if (l == null) {
-						
-					}
-					double lon = l.getLongitude();
-					double lat = l.getLatitude();
-					gc.getFromLocation(lat, lon, 1).remove(0);
-					fromAddress = gc.getFromLocationName(from, 1, lat+1, lon-1, lat-1, lon+1).remove(0);
-					toAddress   = gc.getFromLocationName(from, 1, lat+1, lon-1, lat-1, lon+1).remove(0);
+					List<Address> path = directionForm.getWalkPath(api);
+					fromAddress = path.get(0);
+					toAddress   = path.get(1);
+					
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -264,33 +275,4 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener {
 			
 		super.onActivityResult(requestCode, resultCode, data);
 	}
-	
-/*	static final int DIALOG_EXIT_ID = 1;
-	@Override
-	protected Dialog onCreateDialog(int id, Bundle args) {
-		Dialog dialog;
-		switch(id){
-		case DIALOG_EXIT_ID:
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setMessage("Are you sure you want to exit?")
-			       .setCancelable(false)
-			       .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-			           public void onClick(DialogInterface dialog, int id) {
-			                GMapsActivity.this.finish();
-			           }
-			       })
-			       .setNegativeButton("No", new DialogInterface.OnClickListener() {
-			           public void onClick(DialogInterface dialog, int id) {
-			                dialog.cancel();
-			           }
-			       });
-			AlertDialog alert = builder.create();
-			dialog = alert;
-			break;
-			default:
-				dialog= null;
-		}
-		return dialog;
-	}
-*/
 }
