@@ -22,7 +22,7 @@ public class DirectionsForm {
 		}
 		
 		public Address findLocation(SearchApi api) throws IOException {
-			return api.geocoder.getFromLocationName(name, 1).remove(0);
+			return api.geocoder.getFromLocationName(name, 1, 57.44,	11.60, 57.82, 12.10).remove(0);
 		}
 	}
 	

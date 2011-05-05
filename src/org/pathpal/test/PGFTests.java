@@ -10,7 +10,7 @@ import org.pathpal.TranslatorApi;
 import junit.framework.TestCase;
 
 public class PGFTests extends TestCase {
-	public void testShouldParseGoTo() {
+/*	public void testShouldParseGoTo() {
 		TestForm tf = new TestForm();
 		try {
 			TranslatorApi.translateString("I need to go to Brunnsparken", tf);
@@ -35,4 +35,6 @@ public class PGFTests extends TestCase {
 			this.address = address;
 		}
 	}
+
+*/
 }

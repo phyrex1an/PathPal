@@ -13,10 +13,10 @@ public class TranslatorApi {
 		PGF pgf = PGFBuilder.fromInputStream(pgffile);
 		Parser parser = new Parser(pgf, "LocatorSwe");
 		Tree[] trees = (Tree[]) parser.parse(words).getTrees();
-		if(trees.length < 1) { return false; }
-		if(!(trees[0] instanceof Application)) { return false; }
+		if(trees.length < 1) { System.out.println("LOCATOR length < 1"); return false; }
+		if(!(trees[0] instanceof Application)) { System.out.println("0 !instanceof Application"); return false; }
 		Application tree = (Application) trees[0];
-		if(((Function) tree.tree_1).ident_ != "GoTo") { return false; }
+		if(!((Function) tree.tree_1).ident_.equals("GoTo")) { System.out.println("ident_ != GoTo. It is: " + ((Function) tree.tree_1).ident_); return false; }
 		form.goToAddress(((Function) tree.tree_2).ident_);
 		return true;
 	}

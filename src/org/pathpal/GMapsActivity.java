@@ -1,11 +1,15 @@
 package org.pathpal;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.grammaticalframework.UnknownLanguageException;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -231,13 +235,37 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener {
 				String from = d.get("from").toString();
 				String to   = d.get("to").toString();
 				
-				
-				
+				String nlp = d.get("nlp").toString();
+
 				SearchApi api = new SearchApi();
 				api.geocoder = new Geocoder(getApplicationContext());
 				DirectionsForm directionForm = new DirectionsForm();
-				directionForm.startAtAddress(from);
-				directionForm.goToAddress(to);
+				
+				
+					try {
+						
+						boolean work =TranslatorApi.translateString(nlp, directionForm, getResources().openRawResource(R.raw.locator));
+						if(!work){
+							System.out.println("ERORORORORORRO ====================");
+							return;
+						}
+						directionForm.startAtAddress("ullevi");
+						
+					} catch (FileNotFoundException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (UnknownLanguageException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				
+				
+
+				
+			//	directionForm.goToAddress(to);
 				
 				
 				
@@ -250,29 +278,56 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener {
 					fromAddress = path.get(0);
 					toAddress   = path.get(1);
 					
+					final int convert = 1000000;
+					System.out.println("=================="  + fromAddress.getLatitude() + "===============" + (int) (fromAddress.getLatitude()*convert));
+					
+					
+					GeoPoint startPos = new GeoPoint((int) (fromAddress.getLatitude()*convert), (int) (fromAddress.getLongitude()*convert));
+					GeoPoint endPos   = new GeoPoint((int) (toAddress.getLatitude()*convert), (int) (toAddress.getLongitude() * convert) );
+					DrivingDirections dd = new DrivingDirectionsGoogleKML();
+					dd.driveTo(startPos, endPos, Mode.DRIVING, this);
+					mapController.animateTo(startPos);
+					
+					// output the user input to log
+					System.out.println("====================");
+					System.out.println(from + " " + to);
+					System.out.println("====================");
+			
+					
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
+				} catch (IndexOutOfBoundsException e){
+					showDialog(NO_PATH_ID); 
+					//		Builder noPathDialog = new AlertDialog.Builder(getApplicationContext());
+			//		noPathDialog.setMessage("Could not find path, try another one!");
+				//	noPathDialog.show();
+					
 				}
 				
 
-				final int convert = 1000000;
-				System.out.println("=================="  + fromAddress.getLatitude() + "===============" + (int) (fromAddress.getLatitude()*convert));
-				
-				
-				GeoPoint startPos = new GeoPoint((int) (fromAddress.getLatitude()*convert), (int) (fromAddress.getLongitude()*convert));
-				GeoPoint endPos   = new GeoPoint((int) (toAddress.getLatitude()*convert), (int) (toAddress.getLongitude() * convert) );
-				DrivingDirections dd = new DrivingDirectionsGoogleKML();
-				dd.driveTo(startPos, endPos, Mode.DRIVING, this);
-				mapController.animateTo(startPos);
-				
-				// output the user input to log
-				System.out.println("====================");
-				System.out.println(from + " " + to);
-				System.out.println("====================");
 			}
 		}
 			
 		super.onActivityResult(requestCode, resultCode, data);
 	}
+	
+	final int NO_PATH_ID = 0;
+	
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		Dialog d = null;
+		if(id == NO_PATH_ID){
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setMessage("No path found! Try a new path!")
+			       .setCancelable(false)
+			       .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+			           public void onClick(DialogInterface dialog, int id) {
+			                dialog.cancel();
+			           }
+			       });
+			d = builder.create();
+		}
+		return d;
+	}
+	
 }
