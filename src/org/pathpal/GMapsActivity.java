@@ -69,6 +69,13 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener {
 		Geocoder gc = new Geocoder(getApplicationContext());
 		try {
 			System.out.println("HEJSAN");
+			System.out.println("HEJSAN");
+			System.out.println("HEJSAN");
+			System.out.println("HEJSAN");
+			System.out.println("HEJSAN");
+			System.out.println("HEJSAN");
+			System.out.println("HEJSAN");
+			System.out.println("HEJSAN");
 			List<Address> hej = gc.getFromLocationName("ullevi", 10);
 			for(Address a : hej){
 				System.out.println("=======================" + a.getAddressLine(0));	
@@ -218,6 +225,7 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener {
 				try {
 					fromAddress = gc.getFromLocationName(from, 1).remove(0);
 					toAddress   = gc.getFromLocationName(to, 1).remove(0);
+					
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -243,33 +251,4 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener {
 			
 		super.onActivityResult(requestCode, resultCode, data);
 	}
-	
-/*	static final int DIALOG_EXIT_ID = 1;
-	@Override
-	protected Dialog onCreateDialog(int id, Bundle args) {
-		Dialog dialog;
-		switch(id){
-		case DIALOG_EXIT_ID:
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setMessage("Are you sure you want to exit?")
-			       .setCancelable(false)
-			       .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-			           public void onClick(DialogInterface dialog, int id) {
-			                GMapsActivity.this.finish();
-			           }
-			       })
-			       .setNegativeButton("No", new DialogInterface.OnClickListener() {
-			           public void onClick(DialogInterface dialog, int id) {
-			                dialog.cancel();
-			           }
-			       });
-			AlertDialog alert = builder.create();
-			dialog = alert;
-			break;
-			default:
-				dialog= null;
-		}
-		return dialog;
-	}
-*/
 }
