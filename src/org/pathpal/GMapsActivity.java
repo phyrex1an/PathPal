@@ -67,7 +67,7 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener {
 		GeoPoint gp_end         = new GeoPoint(38036160, 23787610);
 		dd.driveTo(gp_start, gp_end, Mode.DRIVING, this);
 				
-		Geocoder gc = new Geocoder(getApplicationContext());
+/*		Geocoder gc = new Geocoder(getApplicationContext());
 		try {
 			System.out.println("HEJSAN");
 			System.out.println("HEJSAN");
@@ -107,7 +107,7 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+*/		
 		
 		mapController = mapView.getController();
 		mapController.animateTo(gp_start);
@@ -231,13 +231,24 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener {
 				String from = d.get("from").toString();
 				String to   = d.get("to").toString();
 				
+				
+				
+				SearchApi api = new SearchApi();
+				api.geocoder = new Geocoder(getApplicationContext());
+				DirectionsForm directionForm = new DirectionsForm();
+				directionForm.startAtAddress(from);
+				directionForm.goToAddress(to);
+				
+				
+				
+				
 				// DO SOMETHING WITH THE RESULT FROM FIND_PATH
-				Geocoder gc = new Geocoder(getApplicationContext());
 				Address fromAddress = null;
 				Address toAddress   = null;
 				try {
-					fromAddress = gc.getFromLocationName(from, 1).remove(0);
-					toAddress   = gc.getFromLocationName(to, 1).remove(0);
+					List<Address> path = directionForm.getWalkPath(api);
+					fromAddress = path.get(0);
+					toAddress   = path.get(1);
 					
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
