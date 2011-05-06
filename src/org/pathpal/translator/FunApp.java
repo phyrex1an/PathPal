@@ -21,4 +21,9 @@ public class FunApp {
 	public List<FunApp> getArgs() {
 		return args;
 	}
+	public String toString() {
+		StringBuffer args = new StringBuffer();
+		for(FunApp arg : this.args) args.append(" (" + arg.toString() + ")");
+		return getIdent() + args.toString();
+	}
 }
