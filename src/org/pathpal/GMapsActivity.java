@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.grammaticalframework.UnknownLanguageException;
+import org.pathpal.DirectionsForm.Leg;
+import org.pathpal.DirectionsForm.Waypoint;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -239,7 +241,7 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener {
 
 				SearchApi api = new SearchApi();
 				api.geocoder = new Geocoder(getApplicationContext());
-				DirectionsForm directionForm = new DirectionsForm();
+				DirectionsForm directionForm = new DirectionsForm(null); // TODO: null == current location
 				
 				
 					try {
@@ -249,7 +251,7 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener {
 							System.out.println("ERORORORORORRO ====================");
 							return;
 						}
-						directionForm.startAtAddress("ullevi");
+						directionForm.startAt("ullevi");
 						
 					} catch (FileNotFoundException e1) {
 						// TODO Auto-generated catch block
@@ -274,10 +276,12 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener {
 				Address fromAddress = null;
 				Address toAddress   = null;
 				try {
-					List<Address> path = directionForm.getWalkPath(api);
-					fromAddress = path.get(0);
-					toAddress   = path.get(1);
+					Waypoint curLoc = directionForm.startingLocation();
+					List<Leg> path = directionForm.getTravelPath();
 					
+					fromAddress = curLoc.findAddress(api);
+					toAddress   = path.get(0).destination().findAddress(api);
+
 					final int convert = 1000000;
 					System.out.println("=================="  + fromAddress.getLatitude() + "===============" + (int) (fromAddress.getLatitude()*convert));
 					
