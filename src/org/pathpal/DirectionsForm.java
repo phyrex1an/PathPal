@@ -6,38 +6,75 @@ import java.util.*;
 import android.location.Address;
 
 public class DirectionsForm {
-//	private List<Waypoint> waypoints = new ArrayList<Waypoint>();
 	
-	private Waypoint to, from;
-	
+	public enum TravelMethod {BUS, WALK};
+	// A waypoint is a point along the travel path as entered by the user
+	// for example "closest pet store", "Ullevi" or "200m a head"
+	// A waypoint is ambiguous and needs extra information to resolve to a
+	// location
 	public interface Waypoint {
-		public abstract Address findLocation(SearchApi api) throws IOException;
+		public Address findAddress(SearchApi api) throws IOException;
 	}
 	
-	private class AddressLine implements Waypoint {
-		private String name;
-		
-		AddressLine(String name) {
-			this.name = name;
+	private class WaypointAddress implements Waypoint {
+		private String address;
+		WaypointAddress(String address) {
+			this.address = address;
 		}
-		
-		public Address findLocation(SearchApi api) throws IOException {
-			return api.geocoder.getFromLocationName(name, 1, 57.44,	11.60, 57.82, 12.10).remove(0);
+		public Address findAddress(SearchApi api) throws IOException {
+			return api.geocoder.getFromLocationName(address, 1, 57.44, 11.60, 57.82, 12.10).get(0);
 		}
 	}
 	
-	public void goToAddress(String name) {
-		to = new AddressLine(name);
+	public class Leg {
+		Leg(Waypoint destination) {
+			this.destination = destination;
+		}
+		protected Waypoint destination;
+		protected TravelMethod method = TravelMethod.WALK;
+		
+		public Waypoint destination() {
+			return destination;
+		}
+		
+		public TravelMethod method() {
+			return method;
+		}
+	}
+
+	private Waypoint startAt;
+	private List<Leg> travelPath = new ArrayList<Leg>();
+	
+	public DirectionsForm(Waypoint startAt) {
+		this.startAt = startAt;
 	}
 	
-	public void startAtAddress(String name) {
-		from = new AddressLine(name);
+	public Waypoint startingLocation() {
+		return startAt;
+	}
+
+	public void startAt(Waypoint startAt) {
+		this.startAt = startAt;
 	}
 	
-	public List<Address> getWalkPath(SearchApi api) throws IOException {
-		List<Address> path = new ArrayList<Address>();
-		path.add(from.findLocation(api));
-		path.add(to.findLocation(api));
-		return path;
+	public void startAt(String address) {
+		startAt(new WaypointAddress(address));
+	}
+	
+	public void byBus() {
+		travelPath.get(travelPath.size()-1).method = TravelMethod.BUS;
+	}
+
+	public DirectionsForm travelTo(Waypoint destination) {
+		this.travelPath.add(new Leg(destination));
+		return this;
+	}
+	
+	public DirectionsForm travelTo(String address) {
+		return this.travelTo(new WaypointAddress(address));
+	}
+
+	public List<Leg> getTravelPath() {
+		return new ArrayList<Leg>(travelPath);
 	}
 }

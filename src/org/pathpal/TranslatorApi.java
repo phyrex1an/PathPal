@@ -19,7 +19,7 @@ public class TranslatorApi {
 		if(!(trees[0] instanceof Application)) { System.out.println("0 !instanceof Application"); return false; }
 		Application tree = (Application) trees[0];
 		if(!((Function) tree.tree_1).ident_.equals("GoTo")) { System.out.println("ident_ != GoTo. It is: " + ((Function) tree.tree_1).ident_); return false; }
-		form.goToAddress(((Function) tree.tree_2).ident_);
+		form.travelTo(((Function) tree.tree_2).ident_);
 		return true;
 	}
 }
