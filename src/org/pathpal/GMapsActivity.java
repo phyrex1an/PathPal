@@ -9,12 +9,9 @@ import org.grammaticalframework.UnknownLanguageException;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -32,9 +29,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-
 import com.amelie.driving.DrivingDirections;
-import com.amelie.driving.Placemark;
 import com.amelie.driving.Route;
 import com.amelie.driving.DrivingDirections.IDirectionsListener;
 import com.amelie.driving.DrivingDirections.Mode;
@@ -47,75 +42,40 @@ import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 import com.google.android.maps.Projection;
 
-public class GMapsActivity extends MapActivity implements IDirectionsListener {
+public class GMapsActivity extends MapActivity implements IDirectionsListener, LocationListener {
 
 	private MapView mapView;
 	private Projection projection;
 	private CustomItemizedOverlay itemizedOverlay;
-	private GeoPoint gpsPoint;
 	private MapController mapController; 
 	
+	private MyLocationOverlay myLocationOverlay;
+	
 	private List<Overlay> mapOverlays;
+	
+	private boolean follow_your_location;
+	
 		
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.gmapslayout);
 		
+		follow_your_location = true;
+		
 		mapView = (MapView) findViewById(R.id.map_view);
 		mapView.setBuiltInZoomControls(true);
 		projection = mapView.getProjection();
 		
-		DrivingDirections dd = new DrivingDirectionsGoogleKML();
-		GeoPoint gp_start          = new GeoPoint(37985339, 23716735);
-		GeoPoint gp_end         = new GeoPoint(38036160, 23787610);
-		dd.driveTo(gp_start, gp_end, Mode.DRIVING, this);
-				
-/*		Geocoder gc = new Geocoder(getApplicationContext());
-		try {
-			System.out.println("HEJSAN");
-			System.out.println("HEJSAN");
-			System.out.println("HEJSAN");
-			System.out.println("HEJSAN");
-			System.out.println("HEJSAN");
-			System.out.println("HEJSAN");
-			System.out.println("HEJSAN");
-			System.out.println("HEJSAN");
-			List<Address> hej = gc.getFromLocationName("ullevi", 10);
-			for(Address a : hej){
-				System.out.println("=======================" + a.getAddressLine(0));	
-				System.out.println("=======================" + a.getAddressLine(1));	
-				System.out.println("=======================" + a.getAddressLine(2));	
-				System.out.println("=======================" + a.getFeatureName());	
-				System.out.println("=======================" + a.getFeatureName());	
-				System.out.println("=======================" + a.getFeatureName());	
-				System.out.println("=======================" + a.getFeatureName());	
-				System.out.println("=======================" + a.getFeatureName());	
-				System.out.println("=======================" + a.getFeatureName());	
-				System.out.println("=======================" + a.getFeatureName());	
-			}
 
-			System.out.println("Getting current location");
-			LocationManager lm = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
-			if (lm == null) System.out.println("lm is null");
-			Location l = lm.getLastKnownLocation(lm.getBestProvider(new Criteria(), true));
-			if (l == null) System.out.println("l is null");
-			double lon = l.getLongitude();
-			double lat = l.getLatitude();
-			System.out.println("Printing current location");
-			for (Address adr : gc.getFromLocation(lat, lon, 1)) {
-				System.out.println(adr.getAddressLine(0) + "; " + adr.getAddressLine(1));
-			}
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-*/		
+		
+		LocationManager lm = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+		lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000L, 500.0f, this);
+		
 		
 		mapController = mapView.getController();
-		mapController.animateTo(gp_start);
-		mapController.setZoom(10);
+		mapController.setZoom(14);
+		
 	}
 	
 	
@@ -193,6 +153,8 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener {
 	    
 	}
 	
+
+	
 	// define the menu from the XML
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -203,6 +165,7 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener {
 	
 	
 	 static final int FIND_PATH_REQUEST_CODE = 0;
+	 static final int YOUR_LOCATION_REQUEST_CODE = 1;
 	 
 	// method to handle a menu button action when you press the menu button
 	@Override
@@ -216,6 +179,14 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener {
 	    	Intent myIntent = new Intent(this, GMapsFindPathActivity.class);
 	    	startActivityForResult(myIntent, FIND_PATH_REQUEST_CODE);
 	    	return true;
+	    case R.id.your_location:
+	    	if (follow_your_location) {
+	    		follow_your_location = false;
+	    		mapController.animateTo(myLocationOverlay.getGeoPoint());
+	    	}else{
+	    		follow_your_location = true;
+	    	}
+	    	
 	    default:
 	        return super.onOptionsItemSelected(item);
 	    }
@@ -246,7 +217,7 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener {
 						
 						boolean work =TranslatorApi.translateString(nlp, directionForm, getResources().openRawResource(R.raw.locator));
 						if(!work){
-							System.out.println("ERORORORORORRO ====================");
+							System.out.println("ERROR: Could not parse");
 							return;
 						}
 						directionForm.startAtAddress("ullevi");
@@ -262,15 +233,6 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener {
 						e1.printStackTrace();
 					}
 				
-				
-
-				
-			//	directionForm.goToAddress(to);
-				
-				
-				
-				
-				// DO SOMETHING WITH THE RESULT FROM FIND_PATH
 				Address fromAddress = null;
 				Address toAddress   = null;
 				try {
@@ -282,8 +244,8 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener {
 					System.out.println("=================="  + fromAddress.getLatitude() + "===============" + (int) (fromAddress.getLatitude()*convert));
 					
 					
-					GeoPoint startPos = new GeoPoint((int) (fromAddress.getLatitude()*convert), (int) (fromAddress.getLongitude()*convert));
-					GeoPoint endPos   = new GeoPoint((int) (toAddress.getLatitude()*convert), (int) (toAddress.getLongitude() * convert) );
+					GeoPoint startPos = geopointfromDouble(fromAddress.getLatitude(), fromAddress.getLongitude());
+					GeoPoint endPos   = geopointfromDouble(toAddress.getLatitude(), toAddress.getLongitude());
 					DrivingDirections dd = new DrivingDirectionsGoogleKML();
 					dd.driveTo(startPos, endPos, Mode.DRIVING, this);
 					mapController.animateTo(startPos);
@@ -297,11 +259,7 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener {
 				} catch (IOException e) {
 					e.printStackTrace();
 				} catch (IndexOutOfBoundsException e){
-					showDialog(NO_PATH_ID); 
-					//		Builder noPathDialog = new AlertDialog.Builder(getApplicationContext());
-			//		noPathDialog.setMessage("Could not find path, try another one!");
-				//	noPathDialog.show();
-					
+					showDialog(NO_PATH_ID);					
 				}
 				
 
@@ -329,5 +287,42 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener {
 		}
 		return d;
 	}
+	
+	protected GeoPoint geopointfromDouble(double latitude, double longitude){
+		final int convert = 1000000;
+		return new GeoPoint( ((int)(latitude * convert)) , ((int)(longitude * convert)) );
+	}
+
+
+
+	public void onLocationChanged(Location location) {
+		if (location != null) {
+			double lat = location.getLatitude();
+			double lng = location.getLongitude();
+			GeoPoint p = new GeoPoint((int) lat * 1000000, (int) lng * 1000000);
+		
+			mapView.getOverlays().remove(myLocationOverlay);
+			myLocationOverlay = new MyLocationOverlay(p);
+			mapView.getOverlays().add(myLocationOverlay);
+			
+			if(follow_your_location)
+				mapController.animateTo(p);
+		}
+	}
+
+	public void onProviderDisabled(String provider) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void onProviderEnabled(String provider) {
+		// TODO Auto-generated method stub
+	}
+
+	public void onStatusChanged(String provider, int status, Bundle extras) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	
 }
