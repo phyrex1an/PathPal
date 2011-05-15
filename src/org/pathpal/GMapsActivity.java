@@ -21,7 +21,6 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
-import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
@@ -56,6 +55,8 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 	private List<Overlay> mapOverlays;
 	
 	private boolean follow_your_location;
+	
+	private DirectionsForm directionForm;
 	
 		
 	@Override
@@ -204,26 +205,22 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 		if(requestCode == FIND_PATH_REQUEST_CODE){
 			System.out.println(resultCode + " <-- resultCode");
 			if(resultCode!=RESULT_CANCELED){
-				Bundle d = data.getExtras();
-				String from = d.get("from").toString();
-				String to   = d.get("to").toString();
-				
+				Bundle d = data.getExtras();				
 				String nlp = d.get("nlp").toString();
 
 				SearchApi api = new SearchApi();
 				api.geocoder = new Geocoder(getApplicationContext());
-				DirectionsForm directionForm = new DirectionsForm(null); // TODO: null == current location
+				MyLocationWaypoint myLocationWP = new MyLocationWaypoint(myLocationOverlay.getGeoPoint());
 				
+				if(directionForm == null){
+					directionForm = new DirectionsForm(myLocationWP);
+				}
 				
 					try {
-						
-						boolean work =TranslatorApi.translateString(nlp, directionForm, getResources().openRawResource(R.raw.locator));
+						boolean work = TranslatorApi.translateString(nlp, directionForm, getResources().openRawResource(R.raw.locator));
 						if(!work){
 							System.out.println("ERROR: Could not parse");
-							return;
 						}
-						directionForm.startAt("ullevi");
-						
 					} catch (FileNotFoundException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -238,27 +235,17 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 				Address fromAddress = null;
 				Address toAddress   = null;
 				try {
-					Waypoint curLoc = directionForm.startingLocation();
+					Waypoint startLocation = directionForm.startingLocation();
 					List<Leg> path = directionForm.getTravelPath();
 					
-					fromAddress = curLoc.findAddress(api);
+					fromAddress = startLocation.findAddress(api);
 					toAddress   = path.get(0).destination().findAddress(api);
-
-					final int convert = 1000000;
-					System.out.println("=================="  + fromAddress.getLatitude() + "===============" + (int) (fromAddress.getLatitude()*convert));
-					
-					
+		
 					GeoPoint startPos = geopointfromDouble(fromAddress.getLatitude(), fromAddress.getLongitude());
 					GeoPoint endPos   = geopointfromDouble(toAddress.getLatitude(), toAddress.getLongitude());
 					DrivingDirections dd = new DrivingDirectionsGoogleKML();
 					dd.driveTo(startPos, endPos, Mode.DRIVING, this);
 					mapController.animateTo(startPos);
-					
-					// output the user input to log
-					System.out.println("====================");
-					System.out.println(from + " " + to);
-					System.out.println("====================");
-			
 					
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -303,7 +290,7 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 		if (location != null) {
 			double lat = location.getLatitude();
 			double lng = location.getLongitude();
-			GeoPoint p = new GeoPoint((int) lat * 1000000, (int) lng * 1000000);
+			GeoPoint p = new GeoPoint((int) (lat * 1000000), (int) (lng * 1000000) );
 		
 			mapView.getOverlays().remove(myLocationOverlay);
 			myLocationOverlay = new MyLocationOverlay(p);
