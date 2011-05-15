@@ -35,12 +35,12 @@ public class DirectionsFormTest extends TestCase {
 	
 	public void testDefaultTravelMethod() {
 		form.travelTo(destination);
-		assertEquals(form.getTravelPath().get(0).method(), DirectionsForm.TravelMethod.WALK);
+		assertEquals(form.getTravelPath().get(0).method(), DirectionsForm.TravelMethod.UNKNOWN);
 	}
 	
 	public void testTravelMethod() {
-		form.travelTo(destination).byBus();
-		assertEquals(form.getTravelPath().get(0).method(), DirectionsForm.TravelMethod.BUS);
+		form.travelTo(destination).byCar();
+		assertEquals(form.getTravelPath().get(0).method(), DirectionsForm.TravelMethod.DRIVE);
 	}
 	
 	public void testThreeStepTravel() {
