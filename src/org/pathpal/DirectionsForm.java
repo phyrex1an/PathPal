@@ -26,6 +26,13 @@ public class DirectionsForm {
 		}
 	}
 	
+	private class CurrentLocation implements Waypoint {
+
+		public Address findAddress(SearchApi api) throws IOException {
+			return api.startLocation;
+		}
+	}
+	
 	public class Leg {
 		Leg(Waypoint destination) {
 			this.destination = destination;
@@ -43,10 +50,15 @@ public class DirectionsForm {
 	}
 
 	private Waypoint startAt;
-	private List<Leg> travelPath = new ArrayList<Leg>();
+	private List<Leg> travelPath;
 	
-	public DirectionsForm(Waypoint startAt) {
-		this.startAt = startAt;
+	public DirectionsForm() {
+		this.reset();
+	}
+	
+	public void reset() {
+		this.startAt = new CurrentLocation();
+		this.travelPath = new ArrayList<Leg>();
 	}
 	
 	public Waypoint startingLocation() {

@@ -210,10 +210,8 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 				
 				String nlp = d.get("nlp").toString();
 
-				SearchApi api = new SearchApi();
-				api.geocoder = new Geocoder(getApplicationContext());
-				DirectionsForm directionForm = new DirectionsForm(null); // TODO: null == current location
-				
+				SearchApi api = new SearchApi(new Geocoder(getApplicationContext()), null); // TODO: null == current location
+				DirectionsForm directionForm = new DirectionsForm(); 
 				
 					try {
 						

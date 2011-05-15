@@ -15,15 +15,11 @@ public class DirectionsFormTest extends TestCase {
 	private DirectionsForm.Waypoint start;
 	private DirectionsForm.Waypoint destination;
 	private DirectionsForm.Waypoint waypoint;
+	private SearchApi api;
 	
 	public void setUp() {
-		start = new DummyWaypoint();
-		form = new DirectionsForm(start);
+		form = new DirectionsForm();
 		destination = new DummyWaypoint();
-	}
-	
-	public void testStartLocation() {
-		assertEquals(start, form.startingLocation());
 	}
 	
 	public void testChangeStartLocation() {
