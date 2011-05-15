@@ -208,13 +208,19 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 				Bundle d = data.getExtras();				
 				String nlp = d.get("nlp").toString();
 
-				SearchApi api = new SearchApi();
+				
+				AddressPlace l =new AddressPlace(myLocationOverlay.getGeoPoint(), "You are here");				
+				SearchApi api = new SearchApi(new Geocoder(getApplicationContext()), l); // TODO: null == current location
 				api.geocoder = new Geocoder(getApplicationContext());
-				MyLocationWaypoint myLocationWP = new MyLocationWaypoint(myLocationOverlay.getGeoPoint());
 				
 				if(directionForm == null){
-					directionForm = new DirectionsForm(myLocationWP);
+					directionForm = new DirectionsForm();
 				}
+				
+				// TEST
+	//			directionForm.startAt("ullevi");
+	//			directionForm.travelTo("gamla ullevi");
+				// END TEST
 				
 					try {
 						boolean work = TranslatorApi.translateString(nlp, directionForm, getResources().openRawResource(R.raw.locator));
@@ -232,8 +238,8 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 						e1.printStackTrace();
 					}
 				
-				Address fromAddress = null;
-				Address toAddress   = null;
+				AddressPlace fromAddress = null;
+				AddressPlace toAddress   = null;
 				try {
 					Waypoint startLocation = directionForm.startingLocation();
 					List<Leg> path = directionForm.getTravelPath();
@@ -241,11 +247,9 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 					fromAddress = startLocation.findAddress(api);
 					toAddress   = path.get(0).destination().findAddress(api);
 		
-					GeoPoint startPos = geopointfromDouble(fromAddress.getLatitude(), fromAddress.getLongitude());
-					GeoPoint endPos   = geopointfromDouble(toAddress.getLatitude(), toAddress.getLongitude());
 					DrivingDirections dd = new DrivingDirectionsGoogleKML();
-					dd.driveTo(startPos, endPos, Mode.DRIVING, this);
-					mapController.animateTo(startPos);
+					dd.driveTo(fromAddress.geopoint, toAddress.geopoint, Mode.DRIVING, this);
+					mapController.animateTo(fromAddress.geopoint);
 					
 				} catch (IOException e) {
 					e.printStackTrace();

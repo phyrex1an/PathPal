@@ -3,6 +3,7 @@ package org.pathpal.test;
 import java.io.IOException;
 import java.util.List;
 
+import org.pathpal.AddressPlace;
 import org.pathpal.DirectionsForm;
 import org.pathpal.SearchApi;
 
@@ -15,15 +16,11 @@ public class DirectionsFormTest extends TestCase {
 	private DirectionsForm.Waypoint start;
 	private DirectionsForm.Waypoint destination;
 	private DirectionsForm.Waypoint waypoint;
+	private SearchApi api;
 	
 	public void setUp() {
-		start = new DummyWaypoint();
-		form = new DirectionsForm(start);
+		form = new DirectionsForm();
 		destination = new DummyWaypoint();
-	}
-	
-	public void testStartLocation() {
-		assertEquals(start, form.startingLocation());
 	}
 	
 	public void testChangeStartLocation() {
@@ -56,7 +53,7 @@ public class DirectionsFormTest extends TestCase {
 	
 	private class DummyWaypoint implements DirectionsForm.Waypoint {
 
-		public Address findAddress(SearchApi api) throws IOException {
+		public AddressPlace findAddress(SearchApi api) throws IOException {
 			// TODO Auto-generated method stub
 			return null;
 		}

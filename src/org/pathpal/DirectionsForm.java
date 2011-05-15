@@ -3,6 +3,8 @@ package org.pathpal;
 import java.io.IOException;
 import java.util.*;
 
+import com.google.android.maps.GeoPoint;
+
 import android.location.Address;
 
 public class DirectionsForm {
@@ -13,7 +15,7 @@ public class DirectionsForm {
 	// A waypoint is ambiguous and needs extra information to resolve to a
 	// location
 	public interface Waypoint {
-		public Address findAddress(SearchApi api) throws IOException;
+		public AddressPlace findAddress(SearchApi api) throws IOException;
 	}
 	
 	private class WaypointAddress implements Waypoint {
@@ -21,8 +23,19 @@ public class DirectionsForm {
 		WaypointAddress(String address) {
 			this.address = address;
 		}
-		public Address findAddress(SearchApi api) throws IOException {
-			return api.geocoder.getFromLocationName(address, 1, 57.44, 11.60, 57.82, 12.10).get(0);
+		public AddressPlace findAddress(SearchApi api) throws IOException {
+			Address a =  api.geocoder.getFromLocationName(address, 1, 57.44, 11.60, 57.82, 12.10).get(0);
+			a.getFeatureName();
+			GeoPoint g = new GeoPoint( (int)(a.getLatitude()*1000000), (int)(a.getLongitude()*1000000));
+			AddressPlace l = new AddressPlace(g, a.getFeatureName());
+			return l;
+		}
+	}
+	
+	private class CurrentLocation implements Waypoint {
+
+		public AddressPlace findAddress(SearchApi api) throws IOException {
+			return api.startLocation;
 		}
 	}
 	
@@ -43,10 +56,15 @@ public class DirectionsForm {
 	}
 
 	private Waypoint startAt;
-	private List<Leg> travelPath = new ArrayList<Leg>();
+	private List<Leg> travelPath;
 	
-	public DirectionsForm(Waypoint startAt) {
-		this.startAt = startAt;
+	public DirectionsForm() {
+		this.reset();
+	}
+	
+	public void reset() {
+		this.startAt = new CurrentLocation();
+		this.travelPath = new ArrayList<Leg>();
 	}
 	
 	public Waypoint startingLocation() {

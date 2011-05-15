@@ -15,9 +15,10 @@ public class MyLocationWaypoint implements Waypoint {
 		this.p = p;
 	}
 
-	public Address findAddress(SearchApi api) throws IOException {
+	public AddressPlace findAddress(SearchApi api) throws IOException {
 		Address a = api.geocoder.getFromLocation(fromE6(p.getLatitudeE6()) , fromE6(p.getLongitudeE6()), 1).remove(0);
-		return a;
+		// TODO  : return AddressPlace
+		return null;
 	}
 	
 	private double fromE6(int l){
