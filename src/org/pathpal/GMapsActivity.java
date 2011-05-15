@@ -207,7 +207,6 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 			if(resultCode!=RESULT_CANCELED){
 				Bundle d = data.getExtras();				
 				String nlp = d.get("nlp").toString();
-
 				
 				AddressPlace l =new AddressPlace(myLocationOverlay.getGeoPoint(), "You are here");				
 				SearchApi api = new SearchApi(new Geocoder(getApplicationContext()), l); // TODO: null == current location
@@ -217,11 +216,8 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 					directionForm = new DirectionsForm();
 				}
 				
-				// TEST
-	//			directionForm.startAt("ullevi");
-	//			directionForm.travelTo("gamla ullevi");
-				// END TEST
 				
+				/*
 					try {
 						boolean work = TranslatorApi.translateString(nlp, directionForm, getResources().openRawResource(R.raw.locator));
 						if(!work){
@@ -236,21 +232,32 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 					} catch (UnknownLanguageException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
-					}
+					} */
+				directionForm.startAt("ullevi");
+				directionForm.travelTo("gamla ullevi");
+				directionForm.travelTo("brunnsparken");
 				
-				AddressPlace fromAddress = null;
-				AddressPlace toAddress   = null;
+
+				
 				try {
-					Waypoint startLocation = directionForm.startingLocation();
-					List<Leg> path = directionForm.getTravelPath();
+
+					AddressPlace fromAddress = null;
+					fromAddress = directionForm.startingLocation().findAddress(api);
 					
-					fromAddress = startLocation.findAddress(api);
-					toAddress   = path.get(0).destination().findAddress(api);
-		
-					DrivingDirections dd = new DrivingDirectionsGoogleKML();
-					dd.driveTo(fromAddress.geopoint, toAddress.geopoint, Mode.DRIVING, this);
-					mapController.animateTo(fromAddress.geopoint);
-					
+
+					for (Leg curLeg : directionForm.getTravelPath()) {
+						Waypoint toWaypoint = curLeg.destination();
+						AddressPlace toAddress = toWaypoint.findAddress(api);
+						DirectionsForm.TravelMethod method = curLeg.method();
+						GeoPoint startPos = fromAddress.geopoint;  // geopointfromDouble(fromAddress.getLatitude(), fromAddress.getLongitude());
+						GeoPoint endPos   = toAddress.geopoint; // geopointfromDouble(toAddress.getLatitude(), toAddress.getLongitude());
+						
+						
+						DrivingDirections dd = new DrivingDirectionsGoogleKML();
+						dd.driveTo(startPos, endPos, curLeg.method().realMode(), this);
+						mapController.animateTo(startPos);	
+						fromAddress = toAddress;
+					}				
 				} catch (IOException e) {
 					e.printStackTrace();
 				} catch (IndexOutOfBoundsException e){

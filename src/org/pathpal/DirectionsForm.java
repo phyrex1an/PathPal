@@ -2,6 +2,7 @@ package org.pathpal;
 
 import java.io.IOException;
 import java.util.*;
+import com.amelie.driving.DrivingDirections.Mode;
 
 import com.google.android.maps.GeoPoint;
 
@@ -9,7 +10,20 @@ import android.location.Address;
 
 public class DirectionsForm {
 	
-	public enum TravelMethod {BUS, WALK};
+	public enum TravelMethod {
+			UNKNOWN (Mode.DRIVING), 
+			DRIVE (Mode.DRIVING), 
+			WALK (Mode.WALKING);
+	
+			private Mode gmode; 
+			TravelMethod(Mode mode) {
+				gmode = mode;
+			}
+			
+			public Mode realMode() {
+				return gmode;
+			}
+	};
 	// A waypoint is a point along the travel path as entered by the user
 	// for example "closest pet store", "Ullevi" or "200m a head"
 	// A waypoint is ambiguous and needs extra information to resolve to a
@@ -33,7 +47,6 @@ public class DirectionsForm {
 	}
 	
 	private class CurrentLocation implements Waypoint {
-
 		public AddressPlace findAddress(SearchApi api) throws IOException {
 			return api.startLocation;
 		}
@@ -43,8 +56,8 @@ public class DirectionsForm {
 		Leg(Waypoint destination) {
 			this.destination = destination;
 		}
-		protected Waypoint destination;
-		protected TravelMethod method = TravelMethod.WALK;
+		private Waypoint destination;
+		private TravelMethod method = TravelMethod.UNKNOWN;
 		
 		public Waypoint destination() {
 			return destination;
@@ -79,8 +92,8 @@ public class DirectionsForm {
 		startAt(new WaypointAddress(address));
 	}
 	
-	public void byBus() {
-		travelPath.get(travelPath.size()-1).method = TravelMethod.BUS;
+	public void byCar() {
+		travelPath.get(travelPath.size()-1).method = TravelMethod.DRIVE;
 	}
 
 	public DirectionsForm travelTo(Waypoint destination) {
@@ -90,6 +103,10 @@ public class DirectionsForm {
 	
 	public DirectionsForm travelTo(String address) {
 		return this.travelTo(new WaypointAddress(address));
+	}
+	
+	public DirectionsForm andBackHere() {
+		return this.travelTo(new CurrentLocation());
 	}
 
 	public List<Leg> getTravelPath() {
