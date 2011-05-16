@@ -6,6 +6,8 @@ import java.util.List;
 import org.pathpal.AddressPlace;
 import org.pathpal.DirectionsForm;
 import org.pathpal.SearchApi;
+import org.pathpal.DirectionsForm.Question;
+import org.pathpal.DirectionsForm.WaypointInfo;
 
 import android.location.Address;
 
@@ -54,6 +56,11 @@ public class DirectionsFormTest extends TestCase {
 	private class DummyWaypoint implements DirectionsForm.Waypoint {
 
 		public AddressPlace findAddress(SearchApi api) throws IOException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public List<Question> questions(WaypointInfo w) {
 			// TODO Auto-generated method stub
 			return null;
 		}
