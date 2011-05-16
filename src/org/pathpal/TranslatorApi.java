@@ -39,7 +39,7 @@ public class TranslatorApi {
 			}
 		}
 		if(in) {
-			ss.add(s.toString());
+			ss.add(s.toString().trim());
 		}
 		if (ps.getTrees().length < 1) {
 			return false;

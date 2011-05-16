@@ -17,7 +17,7 @@ public class translateStringTest extends TestCase {
 	public void testTranslateString() throws FileNotFoundException, IOException, UnknownLanguageException{
 		MockDirectionsForm form = new MockDirectionsForm();
 		InputStream st = new FileInputStream("res/raw/locator.pgf") ;
-		assertTrue(TranslatorApi.translateString("I need to go to apa",form,st));
+		assertTrue(TranslatorApi.translateString("I need to go from abc to def",form,st));
 		assertTrue(form.startAt.equals("abc"));
 		assertTrue(form.travelTo.equals("def"));
 		
