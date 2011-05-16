@@ -1,8 +1,12 @@
 package org.pathpal;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.pathpal.DirectionsForm.Question;
 import org.pathpal.DirectionsForm.Waypoint;
+import org.pathpal.DirectionsForm.WaypointInfo;
 
 import com.google.android.maps.GeoPoint;
 
@@ -23,6 +27,11 @@ public class MyLocationWaypoint implements Waypoint {
 	
 	private double fromE6(int l){
 		return (((double)l) / 1000000);
+	}
+
+	public List<Question> questions(WaypointInfo w) {
+		// TODO Auto-generated method stub
+		return new ArrayList<Question>();
 	}
 
 }
