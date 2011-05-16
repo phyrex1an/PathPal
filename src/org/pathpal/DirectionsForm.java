@@ -39,6 +39,7 @@ public class DirectionsForm {
 		}
 		public AddressPlace findAddress(SearchApi api) throws IOException {
 			Address a =  api.geocoder.getFromLocationName(address, 1, 57.44, 11.60, 57.82, 12.10).get(0);
+			a.getFeatureName();
 			GeoPoint g = new GeoPoint( (int)(a.getLatitude()*1000000), (int)(a.getLongitude()*1000000));
 			AddressPlace l = new AddressPlace(g, a.getFeatureName());
 			return l;

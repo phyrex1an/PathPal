@@ -273,6 +273,8 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 					}				
 				} catch (IOException e) {
 					e.printStackTrace();
+				} catch (IndexOutOfBoundsException e){
+					showDialog(NO_PATH_ID);					
 				}
 				
 
