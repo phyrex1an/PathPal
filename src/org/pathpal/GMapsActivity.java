@@ -332,7 +332,7 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 					String value = input.getText().toString();
 					// TODO : do something with value!
 					try{
-						FunApp abstractAnswer = TranslatorApi.parseString(value, getResources().openRawResource(R.raw.locator));
+						FunApp abstractAnswer = (FunApp) TranslatorApi.parseString(value, getResources().openRawResource(R.raw.locator));
 						if(abstractAnswer != null){
 							activeQuestion.answerQuestion(abstractAnswer);
 						}
