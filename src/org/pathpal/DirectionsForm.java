@@ -12,7 +12,6 @@ import com.google.android.maps.GeoPoint;
 import android.location.Address;
 
 public class DirectionsForm {
-	
 	public enum TravelMethod {
 			UNKNOWN (Mode.DRIVING), 
 			DRIVE (Mode.DRIVING), 
@@ -53,7 +52,7 @@ public class DirectionsForm {
 	// ambiguous data
 	public interface Question {
 		public String concreteQuestion();
-		public void answerQuestion(FunApp answer);
+		public boolean answerQuestion(FunApp answer);
 	}
 	
 	private class WaypointAddress implements Waypoint {
@@ -91,9 +90,9 @@ public class DirectionsForm {
 			this.waypointinfo = w;
 		}
 
-		public void answerQuestion(FunApp answer) {
+		public boolean answerQuestion(FunApp answer) {
 			// TODO Auto-generated method stub
-			
+			return false;
 		}
 
 		public String concreteQuestion() {
@@ -145,14 +144,17 @@ public class DirectionsForm {
 		TravelMethodQuestion(Leg l) {
 			leg = l;
 		}
-		public void answerQuestion(FunApp answer) {
-			// TODO !!! DO SOMETHING !!
-	/*		if (answer == "walk") {
+		public boolean answerQuestion(FunApp answer) {
+			if (!answer.getIdent().equals("WalkOrTrans")) {
+				return false;
+			}
+			String id = ((FunApp)answer.getArgs().get(0)).getIdent();
+			if (id.equals("Walking")) {
 				leg.method(TravelMethod.WALK);
-			} else if (answer == "car") {
+			} else if (id.equals("Transportation")) {
 				leg.method(TravelMethod.DRIVE);
 			}
-			*/
+			return true;
 		}
 
 		public String concreteQuestion() {
