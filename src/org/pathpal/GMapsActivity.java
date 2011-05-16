@@ -96,24 +96,21 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 		mapOverlays = mapView.getOverlays();
 
 		Drawable drawable = this.getResources().getDrawable(android.R.drawable.ic_notification_overlay);
+		Drawable goal_draw = this.getResources().getDrawable(android.R.drawable.presence_online);
+
 		itemizedOverlay = new CustomItemizedOverlay(drawable, this);
-		
-		//OverlayItem overlayitem = new OverlayItem(gps.get(0), "hello", gps.size()+"");
-		
-		for(Placemark p : route.getPlacemarks()){
+		CustomItemizedOverlay goal = new CustomItemizedOverlay(goal_draw, this);
+		for(int i=0; i < route.getPlacemarks().size(); i++){
+			Placemark p = route.getPlacemarks().get(i);
 			OverlayItem o = new OverlayItem(p.getLocation(), "", p.getInstructions());
-			
-		//	o.setMarker(R.drawable.i);
-			
-			itemizedOverlay.addOverlay(o);
-			//itemizedOverlay.
+			if(i==route.getPlacemarks().size()-1){
+				goal.addOverlay(o);
+			}else{
+				itemizedOverlay.addOverlay(o);
+			}
 		}
-		
-		
-		
-		//itemizedOverlay.addOverlay(overlayitem);
 		mapOverlays.add(itemizedOverlay);
-		
+		mapOverlays.add(goal);
 		mapOverlays.add(new PathOverlay(gps));
 		
 	}
