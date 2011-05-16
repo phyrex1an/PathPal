@@ -7,7 +7,9 @@ import java.util.List;
 
 import org.grammaticalframework.UnknownLanguageException;
 import org.pathpal.DirectionsForm.Leg;
+import org.pathpal.DirectionsForm.Question;
 import org.pathpal.DirectionsForm.Waypoint;
+import org.pathpal.translator.FunApp;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -26,9 +28,11 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.text.Editable;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.EditText;
 
 import com.amelie.driving.DrivingDirections;
 import com.amelie.driving.Placemark;
@@ -60,7 +64,7 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 	private DirectionsForm directionForm;
 	
 	private int currentColor;
-	
+	private Question activeQuestion;
 		
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -241,46 +245,55 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 				directionForm.travelTo("gamla ullevi");
 				directionForm.travelTo("brunnsparken");
 				
-
 				
-				try {
-
-					AddressPlace fromAddress = null;
-					fromAddress = directionForm.startingLocation().findAddress(api);
+				// Show a dialog with a question if there exist questions!!
+				List<Question> questions = directionForm.questions();
+				if (questions.size() > 0) {
+					System.out.println("DET FINNS QUESTIONSS!!!!!!");
+					activeQuestion = questions.get(0);
+					showDialog(QUESTION_ID);
+				} else { // if there is no more questions, then show the path on the map!
+					System.out.println("DET FINNS INGA !!!!!! QUESTIONSS!!!!!!");
 					
-					Drawable start_draw = this.getResources().getDrawable(android.R.drawable.ic_notification_overlay);
-					CustomItemizedOverlay  start = new CustomItemizedOverlay(start_draw, this);
-					OverlayItem o1 = new OverlayItem(fromAddress.geopoint, "", fromAddress.description);
-					start.addOverlay(o1);
-					mapOverlays = mapView.getOverlays();
-					mapOverlays.add(start);
-					
-					
-					for (Leg curLeg : directionForm.getTravelPath()) {
-						Waypoint toWaypoint = curLeg.destination();
-						AddressPlace toAddress = toWaypoint.findAddress(api);
-						DirectionsForm.TravelMethod method = curLeg.method();
-						GeoPoint startPos = fromAddress.geopoint;  // geopointfromDouble(fromAddress.getLatitude(), fromAddress.getLongitude());
-						GeoPoint endPos   = toAddress.geopoint; // geopointfromDouble(toAddress.getLatitude(), toAddress.getLongitude());
+					try {
+	
+						AddressPlace fromAddress = null;
+						fromAddress = directionForm.startingLocation().findAddress(api);
+						
+						Drawable start_draw = this.getResources().getDrawable(android.R.drawable.ic_notification_overlay);
+						CustomItemizedOverlay  start = new CustomItemizedOverlay(start_draw, this);
+						OverlayItem o1 = new OverlayItem(fromAddress.geopoint, "", fromAddress.description);
+						start.addOverlay(o1);
+						mapOverlays = mapView.getOverlays();
+						mapOverlays.add(start);
+						
+						
+						for (Leg curLeg : directionForm.getTravelPath()) {
+							Waypoint toWaypoint = curLeg.destination();
+							AddressPlace toAddress = toWaypoint.findAddress(api);
+							DirectionsForm.TravelMethod method = curLeg.method();
+							GeoPoint startPos = fromAddress.geopoint;  // geopointfromDouble(fromAddress.getLatitude(), fromAddress.getLongitude());
+							GeoPoint endPos   = toAddress.geopoint; // geopointfromDouble(toAddress.getLatitude(), toAddress.getLongitude());
+								
+							Drawable goal_draw = this.getResources().getDrawable(android.R.drawable.presence_online);
+							CustomItemizedOverlay  goal = new CustomItemizedOverlay(goal_draw, this);
+							OverlayItem o2 = new OverlayItem(endPos, "", toAddress.description);
+							goal.addOverlay(o2);
+							mapOverlays.add(goal);
 							
-						Drawable goal_draw = this.getResources().getDrawable(android.R.drawable.presence_online);
-						CustomItemizedOverlay  goal = new CustomItemizedOverlay(goal_draw, this);
-						OverlayItem o2 = new OverlayItem(endPos, "", toAddress.description);
-						goal.addOverlay(o2);
-						mapOverlays.add(goal);
-						
-						
-						DrivingDirections dd = new DrivingDirectionsGoogleKML();
-						dd.driveTo(startPos, endPos, curLeg.method().realMode(), this);
-						mapController.animateTo(startPos);	
-						fromAddress = toAddress;
-					}				
-				} catch (IOException e) {
-					e.printStackTrace();
-				} catch (IndexOutOfBoundsException e){
-					showDialog(NO_PATH_ID);					
+							
+							DrivingDirections dd = new DrivingDirectionsGoogleKML();
+							dd.driveTo(startPos, endPos, curLeg.method().realMode(), this);
+							mapController.animateTo(startPos);	
+							fromAddress = toAddress;
+						}				
+					} catch (IOException e) {
+						e.printStackTrace();
+					} catch (IndexOutOfBoundsException e){
+						showDialog(NO_PATH_ID);					
+					}
+					
 				}
-				
 
 			}
 		}
@@ -288,8 +301,9 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 		super.onActivityResult(requestCode, resultCode, data);
 	}
 	
-	final int NO_PATH_ID = 0;
 	
+	final int NO_PATH_ID = 0;
+	final int QUESTION_ID = 1;
 	@Override
 	protected Dialog onCreateDialog(int id) {
 		Dialog d = null;
@@ -302,7 +316,46 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 			                dialog.cancel();
 			           }
 			       });
-			d = builder.create();
+			return(builder.create());
+		}else if(id == QUESTION_ID){
+			AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+			alert.setTitle("Need more information!");
+			alert.setMessage(activeQuestion.concreteQuestion());
+
+			// Set an EditText view to get user input 
+			final EditText input = new EditText(this);
+			alert.setView(input);
+
+			alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int whichButton) {
+					String value = input.getText().toString();
+					// TODO : do something with value!
+					try{
+						FunApp abstractAnswer = TranslatorApi.parseString(value, getResources().openRawResource(R.raw.locator));
+						if(abstractAnswer != null){
+							activeQuestion.answerQuestion(abstractAnswer);
+						}
+					}catch (FileNotFoundException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (UnknownLanguageException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} 
+				}
+			});
+
+			alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+			  public void onClick(DialogInterface dialog, int whichButton) {
+			    // Canceled.
+			  }
+			});
+			return(alert.create());
+
 		}
 		return d;
 	}

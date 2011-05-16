@@ -9,10 +9,12 @@ import android.widget.EditText;
 
 public class GMapsFindPathActivity extends Activity {
 	
+	
+	
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.findpath);
-
+        
         Button next = (Button) findViewById(R.id.FindBtn);
         final EditText from = (EditText) findViewById(R.id.from);
         final EditText to = (EditText) findViewById(R.id.to);

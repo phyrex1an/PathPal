@@ -3,6 +3,8 @@ package org.pathpal;
 import java.io.IOException;
 import java.util.*;
 
+import org.pathpal.translator.FunApp;
+
 import com.amelie.driving.DrivingDirections.Mode;
 
 import com.google.android.maps.GeoPoint;
@@ -51,7 +53,7 @@ public class DirectionsForm {
 	// ambiguous data
 	public interface Question {
 		public String concreteQuestion();
-		public void answerQuestion(String answer);
+		public void answerQuestion(FunApp answer);
 	}
 	
 	private class WaypointAddress implements Waypoint {
@@ -66,8 +68,7 @@ public class DirectionsForm {
 			return l;
 		}
 		public List<Question> questions(WaypointInfo w) {
-			// TODO Auto-generated method stub
-			return null;
+			return new ArrayList<Question>();
 		}
 	}
 	
@@ -77,8 +78,7 @@ public class DirectionsForm {
 		}
 
 		public List<Question> questions(WaypointInfo w) {
-			// TODO Auto-generated method stub
-			return null;
+			return new ArrayList<Question>();
 		}
 	}
 	
@@ -91,7 +91,7 @@ public class DirectionsForm {
 			this.waypointinfo = w;
 		}
 
-		public void answerQuestion(String answer) {
+		public void answerQuestion(FunApp answer) {
 			// TODO Auto-generated method stub
 			
 		}
@@ -145,12 +145,14 @@ public class DirectionsForm {
 		TravelMethodQuestion(Leg l) {
 			leg = l;
 		}
-		public void answerQuestion(String answer) {
-			if (answer == "walk") {
+		public void answerQuestion(FunApp answer) {
+			// TODO !!! DO SOMETHING !!
+	/*		if (answer == "walk") {
 				leg.method(TravelMethod.WALK);
 			} else if (answer == "car") {
 				leg.method(TravelMethod.DRIVE);
 			}
+			*/
 		}
 
 		public String concreteQuestion() {
@@ -180,7 +182,7 @@ public class DirectionsForm {
 		public List<Question> questions() {
 			List<Question> questions = new ArrayList<Question>();
 			questions.addAll(this.destination.questions());
-			if (this.destination.equals(TravelMethod.UNKNOWN)) {
+			if (this.method.equals(TravelMethod.UNKNOWN)) {
 				questions.add(new TravelMethodQuestion(this));
 			}
 			return questions;
