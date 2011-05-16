@@ -5,27 +5,12 @@
   android:layout_height="fill_parent"
   android:orientation="vertical">
   
-  
-  
   <TextView
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:textColor="#FFFFFF"
     android:text="Find a path" />
-
-   <EditText
- 	android:id="@+id/from"
- 	android:hint="From location"
- 	android:layout_width="fill_parent"
- 	android:layout_height="55px"
-   />
-   <EditText
- 	android:id="@+id/to"
- 	android:hint="To location"
-    android:layout_width="fill_parent"
- 	android:layout_height="55px"
-   />    
-   
+ 
    <EditText
  	android:id="@+id/nl_input"
  	android:hint="Find the path using natural langugage =)"
