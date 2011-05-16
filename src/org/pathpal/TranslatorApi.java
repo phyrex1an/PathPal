@@ -15,9 +15,21 @@ import org.pathpal.translator.FunString;
 
 public class TranslatorApi {
 	public static boolean translateString(String inputString, DirectionsForm form, InputStream pgffile) throws FileNotFoundException, IOException, UnknownLanguageException {
+		FunApp f = (FunApp) parseString(inputString, pgffile);
+		if (f.getIdent().equals("GoFromTo")) {
+			form.startAt(((FunString) f.getArgs().get(0)).getString());
+			form.travelTo(((FunString) f.getArgs().get(1)).getString());
+		} else if (f.getIdent().equals("GoTo")) {
+			form.travelTo(((FunString) f.getArgs().get(0)).getString());
+		}
+		return true;
+	}
+	
+	static Fun parseString(String inputString, InputStream pgffile) throws FileNotFoundException, IOException, UnknownLanguageException {
 		PGF pgf = PGFBuilder.fromInputStream(pgffile);
 		ParseState ps = new ParseState(pgf.concrete("LocatorEng"));
 		String [] tokens = inputString.split(" ");
+
 		boolean in = false ;
 		StringBuffer s = new StringBuffer();
 		LinkedList<String> ss = new LinkedList<String>();
@@ -42,16 +54,9 @@ public class TranslatorApi {
 			ss.add(s.toString().trim());
 		}
 		if (ps.getTrees().length < 1) {
-			return false;
+			return null;
 		}
-		
-		FunApp f = (FunApp) new AddressVisitor(ss).visit((Application) ps.getTrees()[0], new LinkedList<Fun>());
-		if (f.getIdent().equals("GoFromTo")) {
-			form.startAt(((FunString) f.getArgs().get(0)).getString());
-			form.travelTo(((FunString) f.getArgs().get(1)).getString());
-		} else if (f.getIdent().equals("GoTo")) {
-			form.travelTo(((FunString) f.getArgs().get(0)).getString());
-		}
-		return true;
+		return new AddressVisitor(ss).visit((Application) ps.getTrees()[0], new LinkedList<Fun>());
 	}
+	
 }
