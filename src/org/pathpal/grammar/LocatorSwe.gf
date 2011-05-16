@@ -1,13 +1,12 @@
 concrete LocatorSwe of Locator = {
   lincat
-    Phrase,Adress,StoreType,Answer,AdressTree= {s : Str} ;    
+    Phrase,StoreType,Answer,Dummy= {s : Str} ;        
   lin
     GoTo it = {s = "Jag måste gå till" ++ it.s}  ;
     GoFromTo i i' = {s = "Jag måste gå från" ++ i.s ++ "till" ++ i'.s} ;
     FindStore item = {s = "Var är närmaste" ++ item.s} ;
 
-    AdressT i i' = {s = i.s ++ i'.s} ;
-    AdressL i = {s = i.s} ;
+    DString = {s = "dummy"} ;
 
     WalkOrTrans item = {s = item.s} ;
     

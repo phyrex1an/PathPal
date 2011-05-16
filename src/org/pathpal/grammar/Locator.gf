@@ -2,15 +2,14 @@ abstract Locator = {
   flags startcat = Phrase ;
   cat
     Phrase;
-    Adress;
-    AdressTree;
+    Dummy;
     StoreType;
     Answer;
+    
   fun
-    GoTo : AdressTree -> Phrase ;
-    AdressT : String -> AdressTree -> AdressTree;
-    AdressL : String -> AdressTree;
-    GoFromTo : AdressTree -> AdressTree -> Phrase;
+    GoTo : Dummy -> Phrase ;
+    DString : Dummy ;
+    GoFromTo : Dummy -> Dummy -> Phrase;
     FindStore : StoreType -> Phrase ; 
     WalkOrTrans : Answer -> Phrase;
     Walking, Transportation: Answer;

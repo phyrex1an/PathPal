@@ -27,7 +27,7 @@ class MyLocationOverlay extends com.google.android.maps.Overlay {
 	paint.setStrokeWidth(1);
 	paint.setARGB(255, 255, 255, 255);
 	paint.setStyle(Paint.Style.STROKE);
-	Bitmap bmp = BitmapFactory.decodeResource(mapView.getResources(), R.drawable.icon);
+	Bitmap bmp = BitmapFactory.decodeResource(mapView.getResources(), android.R.drawable.star_on);
 	canvas.drawBitmap(bmp, myScreenCoords.x, myScreenCoords.y, paint);
 	canvas.drawText("YOU", myScreenCoords.x, myScreenCoords.y, paint);
 

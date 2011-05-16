@@ -59,6 +59,8 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 	
 	private DirectionsForm directionForm;
 	
+	private int currentColor;
+	
 		
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -71,11 +73,12 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 		mapView.setBuiltInZoomControls(true);
 		projection = mapView.getProjection();
 		
-
+		mapOverlays = new ArrayList<Overlay>();
 		
 		LocationManager lm = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
 		lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000L, 500.0f, this);
 		
+	//	currentColor = Color.RED;
 		
 		mapController = mapView.getController();
 		mapController.setZoom(14);
@@ -92,28 +95,10 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 
 	public void onDirectionsAvailable(Route route, Mode mode) {
 		List<GeoPoint> gps = route.getGeoPoints();
-		
 		mapOverlays = mapView.getOverlays();
-
-		Drawable drawable = this.getResources().getDrawable(android.R.drawable.ic_notification_overlay);
-		itemizedOverlay = new CustomItemizedOverlay(drawable, this);
-		
-		//OverlayItem overlayitem = new OverlayItem(gps.get(0), "hello", gps.size()+"");
-		
-		for(Placemark p : route.getPlacemarks()){
-			OverlayItem o = new OverlayItem(p.getLocation(), "", p.getInstructions());
-			
-		//	o.setMarker(R.drawable.i);
-			
-			itemizedOverlay.addOverlay(o);
-			//itemizedOverlay.
-		}
-		
-		
-		
-		//itemizedOverlay.addOverlay(overlayitem);
-		mapOverlays.add(itemizedOverlay);
-		
+		PathOverlay p = new PathOverlay(gps);
+		System.out.println(currentColor);
+		System.out.println(currentColor);
 		mapOverlays.add(new PathOverlay(gps));
 		
 	}
@@ -131,10 +116,16 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 		
 		private GeoPoint first;
 		private List<GeoPoint> points;
+		private int c;
 		
 	    public PathOverlay(List<GeoPoint> points) {
 	    	this.points = new ArrayList<GeoPoint>(points);
 	    	this.first = this.points.remove(0);
+	    	this.c = Color.RED;
+	    }
+	    
+	    public void setColor(int c){
+	    	this.c = c;
 	    }
 
 	    public void draw(Canvas canvas, MapView mapv, boolean shadow){
@@ -142,11 +133,11 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 	        super.draw(canvas, mapv, shadow);
 	        Paint mPaint = new Paint();
 	        mPaint.setDither(true);
-	        mPaint.setColor(Color.RED);
+	        mPaint.setColor(nextColor());
 	        mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
 	        mPaint.setStrokeJoin(Paint.Join.ROUND);
 	        mPaint.setStrokeCap(Paint.Cap.ROUND);
-	        mPaint.setStrokeWidth(2);
+	        mPaint.setStrokeWidth(4);
 	        
 	        Path path = new Path();
 	        
@@ -257,13 +248,26 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 					AddressPlace fromAddress = null;
 					fromAddress = directionForm.startingLocation().findAddress(api);
 					
-
+					Drawable start_draw = this.getResources().getDrawable(android.R.drawable.ic_notification_overlay);
+					CustomItemizedOverlay  start = new CustomItemizedOverlay(start_draw, this);
+					OverlayItem o1 = new OverlayItem(fromAddress.geopoint, "", fromAddress.description);
+					start.addOverlay(o1);
+					mapOverlays = mapView.getOverlays();
+					mapOverlays.add(start);
+					
+					
 					for (Leg curLeg : directionForm.getTravelPath()) {
 						Waypoint toWaypoint = curLeg.destination();
 						AddressPlace toAddress = toWaypoint.findAddress(api);
 						DirectionsForm.TravelMethod method = curLeg.method();
 						GeoPoint startPos = fromAddress.geopoint;  // geopointfromDouble(fromAddress.getLatitude(), fromAddress.getLongitude());
 						GeoPoint endPos   = toAddress.geopoint; // geopointfromDouble(toAddress.getLatitude(), toAddress.getLongitude());
+							
+						Drawable goal_draw = this.getResources().getDrawable(android.R.drawable.presence_online);
+						CustomItemizedOverlay  goal = new CustomItemizedOverlay(goal_draw, this);
+						OverlayItem o2 = new OverlayItem(endPos, "", toAddress.description);
+						goal.addOverlay(o2);
+						mapOverlays.add(goal);
 						
 						
 						DrivingDirections dd = new DrivingDirectionsGoogleKML();
@@ -337,6 +341,23 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 	public void onStatusChanged(String provider, int status, Bundle extras) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public int nextColor(){
+		switch (currentColor) {
+		case Color.RED:
+			currentColor = Color.BLUE;
+			break;
+		case Color.BLUE:
+			currentColor = Color.GREEN;
+			break;
+		case Color.GREEN:
+			currentColor = Color.GRAY;
+			break;
+		default:
+			currentColor = Color.RED;
+		}
+		return currentColor;
 	}
 
 	
