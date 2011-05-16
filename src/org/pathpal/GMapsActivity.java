@@ -31,6 +31,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.amelie.driving.DrivingDirections;
+import com.amelie.driving.Placemark;
 import com.amelie.driving.Route;
 import com.amelie.driving.DrivingDirections.IDirectionsListener;
 import com.amelie.driving.DrivingDirections.Mode;
@@ -94,12 +95,23 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 		
 		mapOverlays = mapView.getOverlays();
 
-		Drawable drawable = this.getResources().getDrawable(R.drawable.icon);
+		Drawable drawable = this.getResources().getDrawable(android.R.drawable.ic_notification_overlay);
 		itemizedOverlay = new CustomItemizedOverlay(drawable, this);
 		
-		OverlayItem overlayitem = new OverlayItem(gps.get(0), "hello", gps.size()+"");
+		//OverlayItem overlayitem = new OverlayItem(gps.get(0), "hello", gps.size()+"");
 		
-		itemizedOverlay.addOverlay(overlayitem);
+		for(Placemark p : route.getPlacemarks()){
+			OverlayItem o = new OverlayItem(p.getLocation(), "", p.getInstructions());
+			
+		//	o.setMarker(R.drawable.i);
+			
+			itemizedOverlay.addOverlay(o);
+			//itemizedOverlay.
+		}
+		
+		
+		
+		//itemizedOverlay.addOverlay(overlayitem);
 		mapOverlays.add(itemizedOverlay);
 		
 		mapOverlays.add(new PathOverlay(gps));
@@ -158,16 +170,7 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 	
 
 	
-	// define the menu from the XML
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-	    MenuInflater inflater = getMenuInflater();
-	    inflater.inflate(R.menu.gmapmenu, menu);
-	    return true;
-	}
-	
-	
-	 static final int FIND_PATH_REQUEST_CODE = 0;
+	static final int FIND_PATH_REQUEST_CODE = 0;
 	 static final int YOUR_LOCATION_REQUEST_CODE = 1;
 	 
 	// method to handle a menu button action when you press the menu button
@@ -196,6 +199,16 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 	}
 	
 	
+	// define the menu from the XML
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.gmapmenu, menu);
+	    return true;
+	}
+
+
+
 	// Called when an activity you launched exits, 
 	//giving you the requestCode you started it with, 
 	//the resultCode it returned, 
