@@ -2,10 +2,10 @@ package org.pathpal.translator;
 
 import java.util.List;
 
-public class FunApp {
+public class FunApp implements Fun {
 	private String ident;
-	private List<FunApp> args;
-	public FunApp(String ident, List<FunApp> args) {
+	private List<Fun> args;
+	public FunApp(String ident, List<Fun> args) {
 		this.setIdent(ident);
 		this.setArgs(args);
 	}
@@ -15,15 +15,15 @@ public class FunApp {
 	public String getIdent() {
 		return ident;
 	}
-	public void setArgs(List<FunApp> args2) {
+	public void setArgs(List<Fun> args2) {
 		this.args = args2;
 	}
-	public List<FunApp> getArgs() {
+	public List<Fun> getArgs() {
 		return args;
 	}
 	public String toString() {
 		StringBuffer args = new StringBuffer();
-		for(FunApp arg : this.args) args.append(" (" + arg.toString() + ")");
+		for(Fun arg : this.args) args.append(" (" + arg.toString() + ")");
 		return getIdent() + args.toString();
 	}
 }

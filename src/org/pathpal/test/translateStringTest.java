@@ -15,11 +15,21 @@ import junit.framework.TestCase;
 
 public class translateStringTest extends TestCase {
 	public void testTranslateString() throws FileNotFoundException, IOException, UnknownLanguageException{
-		DirectionsForm form = null;
+		MockDirectionsForm form = new MockDirectionsForm();
 		InputStream st = new FileInputStream("res/raw/locator.pgf") ;
+		assertTrue(TranslatorApi.translateString("I need to go to apa",form,st));
+		assertTrue(form.startAt.equals("abc"));
+		assertTrue(form.travelTo.equals("def"));
 		
-		TranslatorApi.translateString("I need to go from abc to def",form,st);
-		
+	}
+	
+	public class MockDirectionsForm extends DirectionsForm
+	{
+		public String travelTo;
+		public String startAt;
+		public MockDirectionsForm() { super(); }
+		public DirectionsForm travelTo(String t) { travelTo = t; return null; }
+		public void startAt(String t) { startAt = t; }
 	}
 
 }

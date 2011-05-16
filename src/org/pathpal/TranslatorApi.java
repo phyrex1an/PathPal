@@ -1,47 +1,57 @@
 package org.pathpal;
 
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.LinkedList;
-
-
+import java.util.*;
 import org.grammaticalframework.*;
 import org.grammaticalframework.Trees.Absyn.*;
+import org.grammaticalframework.parser.ParseState;
 import org.pathpal.translator.AddressVisitor;
+import org.pathpal.translator.Fun;
 import org.pathpal.translator.FunApp;
+import org.pathpal.translator.FunString;
 
 public class TranslatorApi {
 	public static boolean translateString(String inputString, DirectionsForm form, InputStream pgffile) throws FileNotFoundException, IOException, UnknownLanguageException {
-		String[] words = inputString.split(" ");
 		PGF pgf = PGFBuilder.fromInputStream(pgffile);
-		Parser parser = new Parser(pgf, "LocatorEng");
-		
-		Tree[] trees = (Tree[]) parser.parse(words).getTrees();
-		if(trees.length < 1) { System.out.println("LOCATOR length < 1"); return false; }
-		
-		AddressVisitor a = new AddressVisitor();
-		FunApp funapp = a.visit((Application) trees[0], new LinkedList<FunApp>());
-		if (funapp.getIdent().equals("GoTo")){
-			FunApp f = ((LinkedList<FunApp>) funapp.getArgs()).getFirst();
-			StringBuffer destString = new StringBuffer();
-			while (!(f.getIdent().equals("AddressL"))){
-				destString.append(((LinkedList<FunApp>) f.getArgs()).getFirst().getIdent());
-				f = f.getArgs().get(1);
+		ParseState ps = new ParseState(pgf.concrete("LocatorEng"));
+		String [] tokens = inputString.split(" ");
+		boolean in = false ;
+		StringBuffer s = new StringBuffer();
+		LinkedList<String> ss = new LinkedList<String>();
+		for(String t : tokens) {
+			if (!ps.scan(t)) {
+				if(!in) {
+					ps.scan("dummy");
+					s.append(" " + t);
+					in = true;
+				} else {
+					s.append(" " + t);
+				}
+			} else {
+				if(in) {
+					in = false;
+					ss.add(s.toString().trim());
+					s = new StringBuffer();
+				}
 			}
-			System.out.println(destString.toString());
-			form.travelTo(destString.toString());
-			
-			
+		}
+		if(in) {
+			ss.add(s.toString());
+		}
+		if (ps.getTrees().length < 1) {
+			return false;
 		}
 		
-		/*
-		if(!(trees[0] instanceof Application)) { System.out.println("0 !instanceof Application"); return false; }
-		Application tree = (Application) trees[0];
-		if(!((Function) tree.tree_1).ident_.equals("GoTo")) { System.out.println("ident_ != GoTo. It is: " + ((Function) tree.tree_1).ident_); return false; }
-		form.travelTo(((Function) tree.tree_2).ident_);
-		*/
-		
+		FunApp f = (FunApp) new AddressVisitor(ss).visit((Application) ps.getTrees()[0], new LinkedList<Fun>());
+		if (f.getIdent().equals("GoFromTo")) {
+			form.startAt(((FunString) f.getArgs().get(0)).getString());
+			form.travelTo(((FunString) f.getArgs().get(1)).getString());
+		} else if (f.getIdent().equals("GoTo")) {
+			form.travelTo(((FunString) f.getArgs().get(0)).getString());
+		}
 		return true;
 	}
 }
