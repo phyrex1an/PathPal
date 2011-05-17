@@ -48,6 +48,9 @@ public class TranslatorApi {
 				form.byCar();
 			}
 				
+		} else if (f.getIdent().equals("ProbablyAnAddress")) {
+			form.reset();
+			form.travelTo(((FunString) f.getArgs().get(0)).getString());
 		}
 		
 		return true;
