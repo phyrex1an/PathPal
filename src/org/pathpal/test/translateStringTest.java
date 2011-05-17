@@ -22,15 +22,24 @@ public class translateStringTest extends TestCase {
 	public void testTranslateString() throws FileNotFoundException, IOException, UnknownLanguageException{
 		MockDirectionsForm form = new MockDirectionsForm();
 		InputStream st = new FileInputStream("res/raw/locator.pgf") ;
-		/*
+		
 		assertTrue(TranslatorApi.translateString("I want to go by car to abc",form,st));
 		assertTrue(form.travelTo.equals("abc"));
 		assertTrue(form.byCar == true);
-		*/
-		assertTrue(TranslatorApi.translateString("I want to go by car from Dixon to Trixon",form,st));
+		
+		st = new FileInputStream("res/raw/locator.pgf") ;
+		assertTrue(TranslatorApi.translateString("I want to go from Dixon to Trixon via Lixon",form,st));
 		assertTrue(form.travelTo.equals("Trixon"));
-		assertTrue(form.startAt.equals("Dixon"));
-		assertTrue(form.byCar == true);
+		assertTrue(form.startAt.equals("Lixon"));
+		
+		st = new FileInputStream("res/raw/locator.pgf") ;
+		assertTrue(TranslatorApi.translateString("By Car",form,st));
+		assertTrue(form.byCar);
+		
+		st = new FileInputStream("res/raw/locator.pgf") ;	
+		assertTrue(TranslatorApi.translateString("By Foot",form,st));
+		assertTrue(form.byFoot);
+		
 		
 	}
 	
@@ -52,11 +61,13 @@ public class translateStringTest extends TestCase {
 	{
 		public String travelTo;
 		public String startAt;
+		public boolean byFoot;
 		public boolean byCar;
-		public MockDirectionsForm() { super(); }
+		public MockDirectionsForm() { super(null); }
 		public void byCar(){byCar = true;}
-		public DirectionsForm travelTo(String t) { travelTo = t; return null; }
-		public void startAt(String t) { startAt = t; }
+		public void byFoot(){byFoot = true;}
+		public DirectionsForm travelTo(String t) { travelTo = t; return this; }
+		public DirectionsForm startAt(String t) { startAt = t; return this; }
 	}
 
 }

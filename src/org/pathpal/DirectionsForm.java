@@ -84,9 +84,11 @@ public class DirectionsForm {
 	private class AmbiguousWaypointQuestion implements Question {
 
 		private WaypointInfo waypointinfo;
+		private List<AddressPlace> waypoints;
 
 		public AmbiguousWaypointQuestion(List<AddressPlace> waypoints,
 				WaypointInfo w) {
+			this.waypoints = waypoints;
 			this.waypointinfo = w;
 		}
 
@@ -96,8 +98,15 @@ public class DirectionsForm {
 		}
 
 		public String concreteQuestion() {
-			// TODO Auto-generated method stub
-			return null;
+			String question = "Do you want to go to ";
+			String places = "";
+			for (AddressPlace place : this.waypoints) {
+				if (!places.equals("")) {
+					places = places + ", ";
+				}
+				places = places + place.description;
+			}
+			return question + places + "?";
 		}
 		
 	}
@@ -193,8 +202,10 @@ public class DirectionsForm {
 
 	private WaypointInfo startAt = new WaypointInfo(null);
 	private List<Leg> travelPath;
+	private SearchApi api;
 	
-	public DirectionsForm() {
+	public DirectionsForm(SearchApi api) {
+		this.api = api;
 		this.reset();
 	}
 	
@@ -207,16 +218,54 @@ public class DirectionsForm {
 		return startAt.waypoint;
 	}
 
-	public void startAt(Waypoint startAt) {
+	public DirectionsForm startAt(Waypoint startAt) {
 		this.startAt.waypoint = startAt;
+		return this;
 	}
 	
-	public void startAt(String address) {
-		startAt(new WaypointAddress(address));
+	private Waypoint fromAddress(String address) {
+		List<AddressPlace> places = new ArrayList<AddressPlace>();
+		try
+		{
+			List<Address> addresses = this.api.geocoder.getFromLocationName(address, 3, 57.44, 11.60, 57.82, 12.10);
+			for (Address a : addresses) {
+				GeoPoint g = new GeoPoint( (int)(a.getLatitude()*1000000), (int)(a.getLongitude()*1000000));
+				places.add(new AddressPlace(g, a.getFeatureName()));
+			}
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		Waypoint w;
+		switch (places.size()) {
+		case 0:
+			throw new RuntimeException("no path");
+			//w = new UnknownWaypoint();
+			//break;
+		case 1:
+			w = new UnambiguousWaypoint(places.get(0));
+			break;
+			
+		default:
+			w = new AmbiguousWaypoint(places);
+			break;
+		}
+		return w;
+	}
+	
+	public DirectionsForm startAt(String address) {
+		return startAt(fromAddress(address));
+	}
+	
+	private void byMethod(TravelMethod method) {
+		travelPath.get(travelPath.size()-1).method = method;
 	}
 	
 	public void byCar() {
-		travelPath.get(travelPath.size()-1).method = TravelMethod.DRIVE;
+		byMethod(TravelMethod.DRIVE);
+	}
+	
+	public void byFoot() {
+		byMethod(TravelMethod.WALK);
 	}
 
 	public DirectionsForm travelTo(Waypoint destination) {
@@ -225,7 +274,7 @@ public class DirectionsForm {
 	}
 	
 	public DirectionsForm travelTo(String address) {
-		return this.travelTo(new WaypointAddress(address));
+		return this.travelTo(fromAddress(address));
 	}
 	
 	public DirectionsForm andBackHere() {

@@ -1,10 +1,13 @@
 concrete LocatorEng of Locator = {
   lincat
-    Phrase,StoreType,Answer,Dummy= {s : Str} ;    
+    Phrase,StoreType,Answer,Dummy,TransItem,WalkItem= {s : Str} ;    
   lin
     GoTo it = {s = "I need to go to" ++ it.s}  ;
     GoByCarTo it = {s = "I want to go by car to" ++ it.s}  ;
     GoByCarFromTo i i' = {s = "I want to go by car from" ++ i.s ++ "to" ++ i'.s}  ;
+
+    GoToVia i i' = {s = "I want to go to" ++ i.s ++ "via" ++ i'.s} ;
+    GoFromToVia i i' i'' = {s = "I want to go from" ++ i.s ++ "to" ++ i'.s ++ "via" ++ i''.s} ;
 
     WalkTo it = {s = "I want to walk to" ++ it.s} ;
 
@@ -15,7 +18,15 @@ concrete LocatorEng of Locator = {
 
     WalkOrTrans item = {s = item.s} ;
     
-    Walking  = {s = "Walking"} ;
-    
-    Transportation = {s = "Transportation"} ;
+    Walking i = {s = i.s} ;
+    Transportation i = {s = i.s} ;
+
+
+    Walk = {s ="Walk"};
+    Walk2 = {s ="Walking"};
+    Foot = {s = "By Foot"} ;
+
+    Car = {s ="Car"};
+    TBy i= {s = "By" ++ i.s};
+    Vehicle = {s ="Vehicle"};
 }

@@ -223,10 +223,11 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 	public void questionHandler(){
 		// if there are questions then take care of them
 		if(directionForm.questions().size()>0){
+			System.out.println("QUESTIONS: " + directionForm.questions().size());
 			activeQuestion = directionForm.questions().get(0); // select a question as active
 			removeDialog(QUESTION_ID); // clean up the dialog first
 			showDialog(QUESTION_ID);   // then show the dialog
-		}		
+		}
 	}
 
 	@Override
@@ -241,12 +242,15 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 				
 				// Get your current location and create a new SearchApi with your current location
 				AddressPlace l = new AddressPlace(myLocationOverlay.getGeoPoint(), "You are here");				
-				api = new SearchApi(new Geocoder(getApplicationContext()), l); 
-				api.geocoder = new Geocoder(getApplicationContext());
+
 				
 				// create a new directionForm if needed
 				if(directionForm == null){
-					directionForm = new DirectionsForm();
+					api = new SearchApi(new Geocoder(getApplicationContext()), l); 
+					api.geocoder = new Geocoder(getApplicationContext());
+					directionForm = new DirectionsForm(api);
+				} else {
+					api.startLocation = l;
 				}
 				
 				 
