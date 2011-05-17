@@ -1,8 +1,12 @@
 package org.pathpal;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 
+import org.grammaticalframework.UnknownLanguageException;
+import org.grammaticalframework.Linearizer.LinearizerException;
+import org.pathpal.translator.Fun;
 import org.pathpal.translator.FunApp;
 
 import com.amelie.driving.DrivingDirections.Mode;
@@ -38,6 +42,16 @@ public class DirectionsForm {
 		}
 	}
 	
+	public class FunStrings {
+		public Fun f;
+		public List<String> l;
+		
+		public FunStrings(Fun f, List<String> l) {
+			this.f = f;
+			this.l = l;
+		}	
+	}
+	
 	
 	// A waypoint is a point along the travel path as entered by the user
 	// for example "closest pet store", "Ullevi" or "200m a head"
@@ -51,7 +65,7 @@ public class DirectionsForm {
 	// A question direction towards the user with the intent to resolve some
 	// ambiguous data
 	public interface Question {
-		public String concreteQuestion();
+		public FunStrings concreteQuestion();
 		public boolean answerQuestion(FunApp answer);
 	}
 	
@@ -97,16 +111,27 @@ public class DirectionsForm {
 			return false;
 		}
 
-		public String concreteQuestion() {
-			String question = "Do you want to go to ";
-			String places = "";
-			for (AddressPlace place : this.waypoints) {
-				if (!places.equals("")) {
-					places = places + ", ";
-				}
-				places = places + place.description;
+		public FunStrings concreteQuestion() {
+			FunApp fa;
+			LinkedList<Fun> args = new LinkedList<Fun>();
+			switch (this.waypoints.size()) {
+			case 1:	
+				fa = new FunApp("DString1", args);
+				break;
+			case 2:
+				fa = new FunApp("DString2", args);
+				break;
+			case 3:
+				fa = new FunApp("DString3", args);
+				break;
+			default:
+				throw new RuntimeException("Not enough DStringS");
 			}
-			return question + places + "?";
+			List<String> sargs = new ArrayList<String>();
+			for (AddressPlace arg : this.waypoints) {
+				sargs.add(arg.description);
+			}
+			return new FunStrings(fa, sargs);
 		}
 		
 	}
@@ -166,8 +191,8 @@ public class DirectionsForm {
 			return true;
 		}
 
-		public String concreteQuestion() {
-			return "Do you want to walk or go by car?";
+		public FunStrings concreteQuestion() {
+			return new FunStrings(new FunApp("WalkOrCar", new LinkedList<Fun>()), new LinkedList<String>());
 		}
 	}
 	
