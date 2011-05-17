@@ -1,11 +1,11 @@
 package org.pathpal.translator;
 
-import java.util.List;
+import java.util.*;
 
 public class FunApp implements Fun {
 	private String ident;
-	private List<Fun> args;
-	public FunApp(String ident, List<Fun> args) {
+	private LinkedList<Fun> args;
+	public FunApp(String ident, LinkedList<Fun> args) {
 		this.setIdent(ident);
 		this.setArgs(args);
 	}
@@ -15,7 +15,7 @@ public class FunApp implements Fun {
 	public String getIdent() {
 		return ident;
 	}
-	public void setArgs(List<Fun> args2) {
+	public void setArgs(LinkedList<Fun> args2) {
 		this.args = args2;
 	}
 	public List<Fun> getArgs() {

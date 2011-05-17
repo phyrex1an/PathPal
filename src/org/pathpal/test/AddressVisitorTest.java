@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import java.util.LinkedList;
 
+import org.pathpal.translator.*;
+
 import org.grammaticalframework.Trees.Absyn.Application;
 import org.grammaticalframework.Trees.Absyn.Function;
 import org.pathpal.translator.AddressVisitor;
@@ -24,5 +26,10 @@ public class AddressVisitorTest extends TestCase {
 //		assertTrue(((FunApp) a.visit(new Application(new Function("GoFromTo"), new Function ("Foo")), new LinkedList<Fun>())).getArgs().get(0).getIdent().equals("Foo"));
 //		assertTrue(((FunApp) a.visit(new Application(new Application(new Function("GoFromTo"), new Function ("Foo")), new Function("Bar")), new LinkedList<Fun>())).getArgs().get(1).getString().equals("Bar"));
 		assertTrue(a.visit(new Application(new Application(new Function("GoFromTo"), new Function ("Foo")), new Function("Bar")), new LinkedList<Fun>()).toString().equals("GoFromTo (Foo) (Bar)"));
+	}
+	
+	public void testShouldBuildTree() {
+		assertTrue(((Function) AddressVisitor.funToTree(new FunString("Hej"))).ident_.equals("DString"));
+
 	}
 }
