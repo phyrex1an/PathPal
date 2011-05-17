@@ -16,6 +16,9 @@ import org.pathpal.translator.FunString;
 
 public class TranslatorApi {
 	public static boolean translateString(String inputString, DirectionsForm form, InputStream pgffile) throws FileNotFoundException, IOException, UnknownLanguageException {
+		if (inputString.trim().equals("")) { 
+			return false;
+		}
 		FunApp f = (FunApp) parseString(inputString, pgffile);
 		if (f == null) {
 			return false;
