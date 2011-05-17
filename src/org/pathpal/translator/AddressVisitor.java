@@ -7,6 +7,7 @@ import org.grammaticalframework.Trees.Absyn.Function;
 import org.grammaticalframework.Trees.Absyn.Lambda;
 import org.grammaticalframework.Trees.Absyn.Literal;
 import org.grammaticalframework.Trees.Absyn.MetaVariable;
+import org.grammaticalframework.Trees.Absyn.Tree;
 import org.grammaticalframework.Trees.Absyn.Variable;
 
 public class AddressVisitor implements org.grammaticalframework.Trees.Absyn.Tree.Visitor<Fun, LinkedList<Fun>> {
@@ -46,5 +47,18 @@ public class AddressVisitor implements org.grammaticalframework.Trees.Absyn.Tree
 		}
 		return new FunApp(arg0.ident_, arg1);
 	}
-
+	
+	public static Tree funToTree (Fun f) {
+		if (f instanceof FunApp) {
+			FunApp fa = (FunApp) f;
+			Tree t = new Function(fa.getIdent());
+			for(Fun next : fa.getArgs()) {
+				t = new Application(t, funToTree(next));
+			}
+			return t;
+		} else if (f instanceof FunString) {
+			return new Function("DString");
+		}
+		return null;
+	}
 }

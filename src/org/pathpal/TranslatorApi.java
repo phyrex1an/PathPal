@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 import org.grammaticalframework.*;
+import org.grammaticalframework.Linearizer.LinearizerException;
 import org.grammaticalframework.Trees.Absyn.*;
 import org.grammaticalframework.parser.ParseState;
 import org.pathpal.translator.AddressVisitor;
@@ -28,7 +29,23 @@ public class TranslatorApi {
 			form.startAt(((FunString) f.getArgs().get(0)).getString());
 			form.travelTo(((FunString) f.getArgs().get(1)).getString());
 			form.byCar();
-		} 
+		} else if (f.getIdent().equals("GoFromToVia")){
+			form.startAt(((FunString) f.getArgs().get(0)).getString());
+			form.travelTo(((FunString) f.getArgs().get(2)).getString());
+			form.startAt(((FunString) f.getArgs().get(2)).getString());
+			form.travelTo(((FunString) f.getArgs().get(1)).getString());
+			
+		} else if (f.getIdent().equals("GoToVia")){
+			form.startAt(((FunString) f.getArgs().get(1)).getString());
+			form.travelTo(((FunString) f.getArgs().get(0)).getString());
+		} else if (f.getIdent().equals("WalkOrTrans")){
+			if (((FunApp)f.getArgs().get(0)).getIdent().equals("Walking")){
+				form.byFoot();
+			}else {
+				form.byCar();
+			}
+				
+		}
 		
 		return true;
 	}
@@ -65,6 +82,17 @@ public class TranslatorApi {
 			return null;
 		}
 		return new AddressVisitor(ss).visit((Application) ps.getTrees()[0], new LinkedList<Fun>());
+	}
+	
+	public static String makeTranslation(Fun f, List<String> ss,  InputStream pgffile) throws LinearizerException, FileNotFoundException, IOException, UnknownLanguageException {
+		Tree t = AddressVisitor.funToTree(f);
+		PGF pgf = PGFBuilder.fromInputStream(pgffile);
+		Linearizer lin = new Linearizer(pgf, "QuestionsEng");
+		String ret = lin.linearizeString(t);
+		for (String s : ss) {
+			ret = ret.replaceFirst("dummy", s);
+		}
+		return ret;
 	}
 	
 }
