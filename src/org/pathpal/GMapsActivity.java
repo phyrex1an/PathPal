@@ -45,6 +45,10 @@ import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 import com.google.android.maps.Projection;
 
+/**
+ * This class take care of all user input and deligate the work to the libraries. 
+ * Also paints overlays on the map
+ */
 public class GMapsActivity extends MapActivity implements IDirectionsListener, LocationListener {
 
 	private MapView mapView;
@@ -96,6 +100,9 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 		showDialog(NO_PATH_ID);
 	}
 	
+	/**
+	 * Draw a path from a list of GeoPoints
+	 */
 	public class PathOverlay extends Overlay {
 		
 		private GeoPoint first;
@@ -153,6 +160,9 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 	    }   
 	}
 	
+	/**
+	 * Adds all path overlays to the map
+	 */
 	private void updatePath(){
 		try {
 			// clear all previous overlays on the map
@@ -206,6 +216,10 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 		}
 	}
 	
+	/**
+	 * Checks if the directionForm till has some unanswered question.
+	 * If so, show a dialog where the user can answer a question
+	 */
 	public void questionHandler(){
 		// if there are questions then take care of them
 		if(directionForm.questions().size()>0){
@@ -215,10 +229,6 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 		}		
 	}
 
-	// Called when an activity you launched exits, 
-	//giving you the requestCode you started it with, 
-	//the resultCode it returned, 
-	//and any additional data from it
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if(requestCode == FIND_PATH_REQUEST_CODE){
@@ -239,7 +249,7 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 					directionForm = new DirectionsForm();
 				}
 				
-				/* 
+				 
 				    // The TranslatorApi update the directionForm
 				    // the inputstring nlp is passed to the TranslatorApi
 					try {
@@ -254,12 +264,12 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 					} catch (UnknownLanguageException e1) {
 						e1.printStackTrace();
 					} 
-					*/
+					
 				
 				// Test data to use as long as the TranslatorApi is not working properly
-				directionForm.startAt("ullevi");
-				directionForm.travelTo("gamla ullevi");
-				directionForm.travelTo("brunnsparken");
+			//	directionForm.startAt("ullevi");
+			//	directionForm.travelTo("gamla ullevi");
+			//	directionForm.travelTo("brunnsparken");
 				
 				// do all the overlay drawings on the map
 				updatePath();
@@ -292,6 +302,7 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 			gpsNotLoadedBuilder.setMessage("Please wait until GPS is loaded");
 			gpsNotLoadedBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int which) {
+					dialog.cancel();
 				}
 			});
 			return (gpsNotLoadedBuilder.create());
@@ -323,6 +334,8 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 					} catch (UnknownLanguageException e1) {
 						e1.printStackTrace();
 					} 
+					// finish and disnmiss the dialog!
+					dialog.dismiss();
 				}
 			});
 
@@ -336,6 +349,12 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 		return d;
 	}
 	
+	/**
+	 *  Translates a latitude and longitude to a GeoPoint
+	 * @param latitude
+	 * @param longitude
+	 * @return a GeoPoint
+	 */
 	protected GeoPoint geopointfromDouble(double latitude, double longitude){
 		final int convert = 1000000;
 		return new GeoPoint( ((int)(latitude * convert)) , ((int)(longitude * convert)) );
