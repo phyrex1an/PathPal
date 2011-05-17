@@ -19,37 +19,67 @@ public class TranslatorApi {
 		FunApp f = (FunApp) parseString(inputString, pgffile);
 		if (f == null) {
 			return false;
-		} else if (f.getIdent().equals("GoFromTo")) {
-			form.startAt(((FunString) f.getArgs().get(1)).getString());
-			form.travelTo(((FunString) f.getArgs().get(2)).getString());
-		} else if (f.getIdent().equals("GoTo")) {
-			form.travelTo(((FunString) f.getArgs().get(1)).getString());
-		} else if (f.getIdent().equals("GoByCarTo")) {
-			form.travelTo(((FunString) f.getArgs().get(1)).getString());
-			form.byCar();
-		} else if (f.getIdent().equals("GoByCarFromTo")) {
-			form.startAt(((FunString) f.getArgs().get(1)).getString());
-			form.travelTo(((FunString) f.getArgs().get(2)).getString());
-			form.byCar();
-		} else if (f.getIdent().equals("GoFromToVia")){
-			form.startAt(((FunString) f.getArgs().get(1)).getString());
-			form.travelTo(((FunString) f.getArgs().get(3)).getString());
-			form.travelTo(((FunString) f.getArgs().get(2)).getString());
-			
-		} else if (f.getIdent().equals("GoToVia")){
-			form.travelTo(((FunString) f.getArgs().get(2)).getString());
-			form.travelTo(((FunString) f.getArgs().get(1)).getString());
-		} else if (f.getIdent().equals("WalkOrTrans")){
-			if (((FunApp)f.getArgs().get(0)).getIdent().equals("Walking")){
-				form.byFoot();
-			}else {
+		} else if(f.getIdent().equals("INeedWantTo")){ 
+			f = (FunApp) f.getArgs().get(1);
+			if (f.getIdent().equals("GoFromTo")) {
+				form.startAt(((FunString) f.getArgs().get(0)).getString());
+				form.travelTo(((FunString) f.getArgs().get(1)).getString());
+			} else if (f.getIdent().equals("GoTo")) {
+				form.travelTo(((FunString) f.getArgs().get(0)).getString());
+			} else if (f.getIdent().equals("GoByCarTo")) {
+				form.travelTo(((FunString) f.getArgs().get(0)).getString());
 				form.byCar();
-			}
+			} else if (f.getIdent().equals("GoByCarFromTo")) {
+				form.startAt(((FunString) f.getArgs().get(0)).getString());
+				form.travelTo(((FunString) f.getArgs().get(1)).getString());
+				form.byCar();
+			} else if (f.getIdent().equals("GoFromToVia")){
+				form.startAt(((FunString) f.getArgs().get(0)).getString());
+				form.travelTo(((FunString) f.getArgs().get(2)).getString());
+				form.travelTo(((FunString) f.getArgs().get(1)).getString());
 				
-		} else if (f.getIdent().equals("ProbablyAnAddress")) {
-			form.reset();
-			form.travelTo(((FunString) f.getArgs().get(0)).getString());
+			} else if (f.getIdent().equals("GoToVia")){
+				form.travelTo(((FunString) f.getArgs().get(1)).getString());
+				form.travelTo(((FunString) f.getArgs().get(0)).getString());
+			}
 		}
+		else if(f.getIdent().equals("AndThen")){ 
+			f = (FunApp) f.getArgs().get(0);
+			if (f.getIdent().equals("GoFromTo")) {
+				form.startAt(((FunString) f.getArgs().get(0)).getString());
+				form.travelTo(((FunString) f.getArgs().get(1)).getString());
+			} else if (f.getIdent().equals("GoTo")) {
+				form.travelTo(((FunString) f.getArgs().get(0)).getString());
+			} else if (f.getIdent().equals("GoByCarTo")) {
+				form.travelTo(((FunString) f.getArgs().get(0)).getString());
+				form.byCar();
+			} else if (f.getIdent().equals("GoByCarFromTo")) {
+				form.startAt(((FunString) f.getArgs().get(0)).getString());
+				form.travelTo(((FunString) f.getArgs().get(1)).getString());
+				form.byCar();
+			} else if (f.getIdent().equals("GoFromToVia")){
+				form.startAt(((FunString) f.getArgs().get(0)).getString());
+				form.travelTo(((FunString) f.getArgs().get(2)).getString());
+				form.travelTo(((FunString) f.getArgs().get(1)).getString());
+				
+			} else if (f.getIdent().equals("GoToVia")){
+				form.travelTo(((FunString) f.getArgs().get(1)).getString());
+				form.travelTo(((FunString) f.getArgs().get(0)).getString());
+			}
+		}
+		else if (f.getIdent().equals("WalkOrTrans")){
+				if (((FunApp)f.getArgs().get(0)).getIdent().equals("Walking")){
+					form.byFoot();
+				}else {
+					form.byCar();
+				}
+					
+			} else if (f.getIdent().equals("ProbablyAnAddress")) {
+				form.reset();
+				form.travelTo(((FunString) f.getArgs().get(0)).getString());
+			}
+			
+		
 		
 		return true;
 	}
