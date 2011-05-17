@@ -27,18 +27,32 @@ public class TranslatorApi {
 			} else if (f.getIdent().equals("GoTo")) {
 				form.travelTo(((FunString) f.getArgs().get(0)).getString());
 			} else if (f.getIdent().equals("GoByCarTo")) {
+				form.byCar();
+				form.travelTo(((FunString) f.getArgs().get(0)).getString());
+			} else if (f.getIdent().equals("GoFromTo")) {
+				form.reset();
+				form.startAt(((FunString) f.getArgs().get(0)).getString());
+				form.travelTo(((FunString) f.getArgs().get(1)).getString());
+			} else if (f.getIdent().equals("GoTo")) {
+				form.reset();
+				form.travelTo(((FunString) f.getArgs().get(0)).getString());
+			} else if (f.getIdent().equals("GoByCarTo")) {
+				form.reset();
 				form.travelTo(((FunString) f.getArgs().get(0)).getString());
 				form.byCar();
 			} else if (f.getIdent().equals("GoByCarFromTo")) {
+				form.reset();
 				form.startAt(((FunString) f.getArgs().get(0)).getString());
 				form.travelTo(((FunString) f.getArgs().get(1)).getString());
 				form.byCar();
 			} else if (f.getIdent().equals("GoFromToVia")){
+				form.reset();
 				form.startAt(((FunString) f.getArgs().get(0)).getString());
 				form.travelTo(((FunString) f.getArgs().get(2)).getString());
 				form.travelTo(((FunString) f.getArgs().get(1)).getString());
 				
 			} else if (f.getIdent().equals("GoToVia")){
+				form.reset();
 				form.travelTo(((FunString) f.getArgs().get(1)).getString());
 				form.travelTo(((FunString) f.getArgs().get(0)).getString());
 			}
@@ -74,13 +88,10 @@ public class TranslatorApi {
 					form.byCar();
 				}
 					
-			} else if (f.getIdent().equals("ProbablyAnAddress")) {
-				form.reset();
-				form.travelTo(((FunString) f.getArgs().get(0)).getString());
-			}
-			
-		
-		
+		} else if (f.getIdent().equals("ProbablyAnAddress")) {
+			form.reset();
+			form.travelTo(((FunString) f.getArgs().get(0)).getString());
+		}
 		return true;
 	}
 	
