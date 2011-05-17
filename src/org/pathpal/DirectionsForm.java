@@ -116,10 +116,14 @@ public class DirectionsForm {
 		}
 
 		public boolean answerQuestion(FunApp answer) {
+			System.out.println("Ident: " + answer.getIdent());
 			if (answer.getIdent().equals("ProbablyAnAddress")) {
 				String a = ((FunString) answer.getArgs().get(0)).getString();
+				System.out.println("Got answer: " +a);
 				for (AddressPlace address : this.waypoints) {
+					System.out.println("Testing against: " + address.description);
 					if (address.description.equals(a)) {
+						System.out.println("MATCH!");
 						this.waypointinfo.waypoint = new UnambiguousWaypoint(address);
 						return true;
 					}
@@ -127,7 +131,7 @@ public class DirectionsForm {
 			}
 			return false;
 		}
-
+		
 		public FunStrings concreteQuestion() {
 			FunApp fa;
 			LinkedList<Fun> args = new LinkedList<Fun>();
