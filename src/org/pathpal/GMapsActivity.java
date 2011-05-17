@@ -93,7 +93,7 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 
 	// callback if no driving direction where available
 	public void onDirectionsNotAvailable() {
-		// TODO : Show an dialog if no direction where available!
+		showDialog(NO_PATH_ID);
 	}
 	
 	public class PathOverlay extends Overlay {
@@ -110,7 +110,6 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 	    
 	    @Override
 	    public boolean onTap(GeoPoint p, MapView mapView) {
-	    	System.out.println("YOU TAPPED THAT !!!");
 	    	// TODO : Be able to edit the leg, change travelpath etc
 	    	return super.onTap(p, mapView);
 	    }
