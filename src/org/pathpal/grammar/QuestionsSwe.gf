@@ -7,4 +7,5 @@ concrete QuestionsSwe of Questions = {
     DString2 = {s = "dummy or dummy "} ;
     DString3 = {s = "dummy, dummy or dummy"} ;
     WalkOrCar = {s = "Vill du gå eller åka bil ?"} ;
+    WalkOrCarTo d = {s = "Vill du gå eller åka bil till" ++ d.s ++ "?"} ;
 }
