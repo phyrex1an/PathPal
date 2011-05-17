@@ -33,6 +33,11 @@ public class translateStringTest extends TestCase {
 		assertTrue(form.startAt.equals("Lixon"));
 		
 		st = new FileInputStream("res/raw/locator.pgf") ;
+		assertTrue(TranslatorApi.translateString("I need to go from Dixon to Trixon via Lixon",form,st));
+		assertTrue(form.travelTo.equals("Trixon"));
+		assertTrue(form.startAt.equals("Lixon"));
+		
+		st = new FileInputStream("res/raw/locator.pgf") ;
 		assertTrue(TranslatorApi.translateString("By Car",form,st));
 		assertTrue(form.byCar);
 		
