@@ -252,17 +252,17 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 				    // The TranslatorApi update the directionForm
 				    // the inputstring nlp is passed to the TranslatorApi
 					try {
-						boolean work = TranslatorApi.translateString(nlp, directionForm, getResources().openRawResource(R.raw.locator));
-						if(!work){
-							System.out.println("ERROR: Could not parse");
-						}
+						TranslatorApi.translateString(nlp, directionForm, getResources().openRawResource(R.raw.locator));
 					} catch (FileNotFoundException e1) {
 						e1.printStackTrace();
 					} catch (IOException e1) {
 						e1.printStackTrace();
 					} catch (UnknownLanguageException e1) {
 						e1.printStackTrace();
-					} 
+					} catch (NullPointerException e){
+						showDialog(UNKOWN_PARSE_STRING_ID);
+						return;
+					}
 				
 				// do all the overlay drawings on the map
 				updatePath();
@@ -276,6 +276,7 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 	final int NO_PATH_ID = 0;
 	final int QUESTION_ID = 1;
 	final int GPS_NOT_LOADED_ID = 2;
+	final int UNKOWN_PARSE_STRING_ID = 3;
 	
 	@Override
 	protected Dialog onCreateDialog(int id) {
@@ -338,6 +339,15 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 			  }
 			});
 			return(alert.create());
+		}else if(id == UNKOWN_PARSE_STRING_ID){
+			AlertDialog.Builder build = new AlertDialog.Builder(this);
+			build.setMessage("I do not understand what you are saying. Please try something other..");
+			build.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.cancel();
+				}
+			});
+			return (build.create());
 		}
 		return d;
 	}
