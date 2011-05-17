@@ -20,23 +20,29 @@ public class TranslatorApi {
 		if (f == null) {
 			return false;
 		} else if (f.getIdent().equals("GoFromTo")) {
+			form.reset();
 			form.startAt(((FunString) f.getArgs().get(1)).getString());
 			form.travelTo(((FunString) f.getArgs().get(2)).getString());
 		} else if (f.getIdent().equals("GoTo")) {
+			form.reset();
 			form.travelTo(((FunString) f.getArgs().get(1)).getString());
 		} else if (f.getIdent().equals("GoByCarTo")) {
+			form.reset();
 			form.travelTo(((FunString) f.getArgs().get(1)).getString());
 			form.byCar();
 		} else if (f.getIdent().equals("GoByCarFromTo")) {
+			form.reset();
 			form.startAt(((FunString) f.getArgs().get(1)).getString());
 			form.travelTo(((FunString) f.getArgs().get(2)).getString());
 			form.byCar();
 		} else if (f.getIdent().equals("GoFromToVia")){
+			form.reset();
 			form.startAt(((FunString) f.getArgs().get(1)).getString());
 			form.travelTo(((FunString) f.getArgs().get(3)).getString());
 			form.travelTo(((FunString) f.getArgs().get(2)).getString());
 			
 		} else if (f.getIdent().equals("GoToVia")){
+			form.reset();
 			form.travelTo(((FunString) f.getArgs().get(2)).getString());
 			form.travelTo(((FunString) f.getArgs().get(1)).getString());
 		} else if (f.getIdent().equals("WalkOrTrans")){
