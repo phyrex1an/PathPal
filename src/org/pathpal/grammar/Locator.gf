@@ -10,6 +10,8 @@ abstract Locator = {
     GoTo : Dummy -> Phrase ;
     GoByCarTo : Dummy -> Phrase ;
     GoByCarFromTo : Dummy -> Dummy -> Phrase ;
+    GoToVia : Dummy -> Dummy -> Phrase; 
+    GoFromToVia : Dummy -> Dummy -> Dummy -> Phrase;
     WalkTo : Dummy -> Phrase;
     DString : Dummy ;
     GoFromTo : Dummy -> Dummy -> Phrase;

@@ -22,10 +22,10 @@ public class translateStringTest extends TestCase {
 		assertTrue(form.travelTo.equals("abc"));
 		assertTrue(form.byCar == true);
 		*/
-		assertTrue(TranslatorApi.translateString("I want to go by car from Dixon to Trixon",form,st));
+		assertTrue(TranslatorApi.translateString("I want to go from Dixon to Trixon via Lixon",form,st));
 		assertTrue(form.travelTo.equals("Trixon"));
-		assertTrue(form.startAt.equals("Dixon"));
-		assertTrue(form.byCar == true);
+		assertTrue(form.startAt.equals("Lixon"));
+		
 		
 	}
 	
