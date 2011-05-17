@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.grammaticalframework.UnknownLanguageException;
+import org.grammaticalframework.Linearizer.LinearizerException;
+import org.pathpal.DirectionsForm.FunStrings;
 import org.pathpal.DirectionsForm.Leg;
 import org.pathpal.DirectionsForm.Question;
 import org.pathpal.DirectionsForm.Waypoint;
@@ -16,6 +18,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources.NotFoundException;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -316,7 +319,27 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 
 			// TODO : Be able to know which leg/waypoint you are updating!
 			alert.setTitle("Need more information!");
-			alert.setMessage(activeQuestion.concreteQuestion());
+			String question = "";
+			FunStrings p = activeQuestion.concreteQuestion();
+			try {
+				question = TranslatorApi.makeTranslation(p.f, p.l, getResources().openRawResource(R.raw.questions));
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (LinearizerException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (UnknownLanguageException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			alert.setMessage(question);
 
 			// Set an EditText view to get user input 
 			final EditText input = new EditText(this);

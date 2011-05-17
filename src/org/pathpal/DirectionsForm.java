@@ -1,8 +1,11 @@
 package org.pathpal;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 
+import org.grammaticalframework.UnknownLanguageException;
+import org.grammaticalframework.Linearizer.LinearizerException;
 import org.pathpal.translator.Fun;
 import org.pathpal.translator.FunApp;
 
@@ -39,6 +42,16 @@ public class DirectionsForm {
 		}
 	}
 	
+	public class FunStrings {
+		public Fun f;
+		public List<String> l;
+		
+		public FunStrings(Fun f, List<String> l) {
+			this.f = f;
+			this.l = l;
+		}	
+	}
+	
 	
 	// A waypoint is a point along the travel path as entered by the user
 	// for example "closest pet store", "Ullevi" or "200m a head"
@@ -52,7 +65,7 @@ public class DirectionsForm {
 	// A question direction towards the user with the intent to resolve some
 	// ambiguous data
 	public interface Question {
-		public String concreteQuestion();
+		public FunStrings concreteQuestion();
 		public boolean answerQuestion(FunApp answer);
 	}
 	
@@ -98,9 +111,9 @@ public class DirectionsForm {
 			return false;
 		}
 
-		public String concreteQuestion() {
+		public FunStrings concreteQuestion() {
 			FunApp fa;
-			List<Fun> args = new ArrayList<Fun>();
+			LinkedList<Fun> args = new LinkedList<Fun>();
 			switch (this.waypoints.size()) {
 			case 1:	
 				fa = new FunApp("DString1", args);
@@ -118,7 +131,7 @@ public class DirectionsForm {
 			for (AddressPlace arg : this.waypoints) {
 				sargs.add(arg.description);
 			}
-			return TranslatorApi.makeTranslation(fa,sargs);
+			return new FunStrings(fa, sargs);
 		}
 		
 	}
@@ -178,8 +191,8 @@ public class DirectionsForm {
 			return true;
 		}
 
-		public String concreteQuestion() {
-			return TranslatorApi.makeTranslation(new FunApp("WalkOrCar", new ArrayList<Fun>()));
+		public FunStrings concreteQuestion() {
+			return new FunStrings(new FunApp("WalkOrCar", new LinkedList<Fun>()), new LinkedList<String>());
 		}
 	}
 	
