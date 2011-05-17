@@ -27,9 +27,9 @@ public class translateStringTest extends TestCase {
 	{
 		public String travelTo;
 		public String startAt;
-		public MockDirectionsForm() { super(); }
-		public DirectionsForm travelTo(String t) { travelTo = t; return null; }
-		public void startAt(String t) { startAt = t; }
+		public MockDirectionsForm() { super(null); }
+		public DirectionsForm travelTo(String t) { travelTo = t; return this; }
+		public DirectionsForm startAt(String t) { startAt = t; return this; }
 	}
 
 }

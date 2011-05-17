@@ -21,7 +21,7 @@ public class DirectionsFormTest extends TestCase {
 	private SearchApi api;
 	
 	public void setUp() {
-		form = new DirectionsForm();
+		form = new DirectionsForm(api);
 		destination = new DummyWaypoint();
 	}
 	
