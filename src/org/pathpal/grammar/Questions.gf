@@ -9,4 +9,5 @@ abstract Questions = {
     DString2 : DummyString ;
     DString3 : DummyString ;
     WalkOrCar : Question ;
+    WalkOrCarTo : DummyString -> Question ;
 }
