@@ -83,16 +83,11 @@ public class TranslatorApi {
 			ss.add(s.toString().trim());
 		}
 		if (ps.getTrees().length < 1) {
-			return null;
-		}
-		Tree t = ps.getTrees()[0];
-		if (t == null) {
 			LinkedList<Fun> as = new LinkedList<Fun>();
 			as.add(new FunString(inputString));
 			return new FunApp("ProbablyAnAddress", as);
-		} else {
-			return new AddressVisitor(ss).visit((Application) t, new LinkedList<Fun>());
 		}
+		return new AddressVisitor(ss).visit((Application) ps.getTrees()[0], new LinkedList<Fun>());
 	}
 	
 	public static String makeTranslation(Fun f, List<String> ss,  InputStream pgffile) throws LinearizerException, FileNotFoundException, IOException, UnknownLanguageException {

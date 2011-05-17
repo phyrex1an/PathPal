@@ -1,5 +1,4 @@
 -- TODO
--- need/want
 -- before i go to göteborg i want to go to abc
 concrete LocatorEng of Locator = {
   lincat
