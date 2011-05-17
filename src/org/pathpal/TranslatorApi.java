@@ -17,9 +17,11 @@ import org.pathpal.translator.FunString;
 public class TranslatorApi {
 	public static boolean translateString(String inputString, DirectionsForm form, InputStream pgffile) throws FileNotFoundException, IOException, UnknownLanguageException {
 		FunApp f = (FunApp) parseString(inputString, pgffile);
-		if (f.getIdent().equals("GoFromTo")) {
-			form.startAt(((FunString) f.getArgs().get(1)).getString());
-			form.travelTo(((FunString) f.getArgs().get(2)).getString());
+		if (f == null) {
+			return false;
+		} else if (f.getIdent().equals("GoFromTo")) {
+			form.startAt(((FunString) f.getArgs().get(0)).getString());
+			form.travelTo(((FunString) f.getArgs().get(1)).getString());
 		} else if (f.getIdent().equals("GoTo")) {
 			form.travelTo(((FunString) f.getArgs().get(1)).getString());
 		} else if (f.getIdent().equals("GoByCarTo")) {
@@ -45,6 +47,9 @@ public class TranslatorApi {
 				form.byCar();
 			}
 				
+		} else if (f.getIdent().equals("ProbablyAnAddress")) {
+			form.reset();
+			form.travelTo(((FunString) f.getArgs().get(0)).getString());
 		}
 		
 		return true;
@@ -81,7 +86,14 @@ public class TranslatorApi {
 		if (ps.getTrees().length < 1) {
 			return null;
 		}
-		return new AddressVisitor(ss).visit((Application) ps.getTrees()[0], new LinkedList<Fun>());
+		Tree t = ps.getTrees()[0];
+		if (t == null) {
+			LinkedList<Fun> as = new LinkedList<Fun>();
+			as.add(new FunString(inputString));
+			return new FunApp("ProbablyAnAddress", as);
+		} else {
+			return new AddressVisitor(ss).visit((Application) t, new LinkedList<Fun>());
+		}
 	}
 	
 	public static String makeTranslation(Fun f, List<String> ss,  InputStream pgffile) throws LinearizerException, FileNotFoundException, IOException, UnknownLanguageException {
