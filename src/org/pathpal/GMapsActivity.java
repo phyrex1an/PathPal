@@ -217,17 +217,16 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 	}
 	
 	/**
-	 * Checks if the directionForm till has some unanswered question.
+	 * Checks if the directionForm still has some unanswered question.
 	 * If so, show a dialog where the user can answer a question
 	 */
 	public void questionHandler(){
 		// if there are questions then take care of them
 		if(directionForm.questions().size()>0){
-			System.out.println("QUESTIONS: " + directionForm.questions().size());
 			activeQuestion = directionForm.questions().get(0); // select a question as active
 			removeDialog(QUESTION_ID); // clean up the dialog first
 			showDialog(QUESTION_ID);   // then show the dialog
-		}
+		}		
 	}
 
 	@Override
@@ -242,18 +241,14 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 				
 				// Get your current location and create a new SearchApi with your current location
 				AddressPlace l = new AddressPlace(myLocationOverlay.getGeoPoint(), "You are here");				
-
+				api = new SearchApi(new Geocoder(getApplicationContext()), l); 
+				api.geocoder = new Geocoder(getApplicationContext());
 				
 				// create a new directionForm if needed
 				if(directionForm == null){
-					api = new SearchApi(new Geocoder(getApplicationContext()), l); 
-					api.geocoder = new Geocoder(getApplicationContext());
 					directionForm = new DirectionsForm(api);
-				} else {
-					api.startLocation = l;
 				}
 				
-				 
 				    // The TranslatorApi update the directionForm
 				    // the inputstring nlp is passed to the TranslatorApi
 					try {
@@ -268,12 +263,6 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 					} catch (UnknownLanguageException e1) {
 						e1.printStackTrace();
 					} 
-					
-				
-				// Test data to use as long as the TranslatorApi is not working properly
-			//	directionForm.startAt("ullevi");
-			//	directionForm.travelTo("gamla ullevi");
-			//	directionForm.travelTo("brunnsparken");
 				
 				// do all the overlay drawings on the map
 				updatePath();
@@ -329,8 +318,8 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 						FunApp abstractAnswer = (FunApp) TranslatorApi.parseString(value, getResources().openRawResource(R.raw.locator));
 						if(abstractAnswer != null){
 							activeQuestion.answerQuestion(abstractAnswer);
-							updatePath();
 						}
+						updatePath();
 					}catch (FileNotFoundException e1) {
 						e1.printStackTrace();
 					} catch (IOException e1) {
