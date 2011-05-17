@@ -3,6 +3,8 @@ package org.pathpal;
 import java.io.IOException;
 import java.util.*;
 
+import org.pathpal.translator.FunApp;
+
 import com.amelie.driving.DrivingDirections.Mode;
 
 import com.google.android.maps.GeoPoint;
@@ -10,7 +12,6 @@ import com.google.android.maps.GeoPoint;
 import android.location.Address;
 
 public class DirectionsForm {
-	
 	public enum TravelMethod {
 			UNKNOWN (Mode.DRIVING), 
 			DRIVE (Mode.DRIVING), 
@@ -51,7 +52,7 @@ public class DirectionsForm {
 	// ambiguous data
 	public interface Question {
 		public String concreteQuestion();
-		public void answerQuestion(String answer);
+		public boolean answerQuestion(FunApp answer);
 	}
 	
 	private class WaypointAddress implements Waypoint {
@@ -66,8 +67,7 @@ public class DirectionsForm {
 			return l;
 		}
 		public List<Question> questions(WaypointInfo w) {
-			// TODO Auto-generated method stub
-			return null;
+			return new ArrayList<Question>();
 		}
 	}
 	
@@ -77,8 +77,7 @@ public class DirectionsForm {
 		}
 
 		public List<Question> questions(WaypointInfo w) {
-			// TODO Auto-generated method stub
-			return null;
+			return new ArrayList<Question>();
 		}
 	}
 	
@@ -91,9 +90,9 @@ public class DirectionsForm {
 			this.waypointinfo = w;
 		}
 
-		public void answerQuestion(String answer) {
+		public boolean answerQuestion(FunApp answer) {
 			// TODO Auto-generated method stub
-			
+			return false;
 		}
 
 		public String concreteQuestion() {
@@ -145,12 +144,17 @@ public class DirectionsForm {
 		TravelMethodQuestion(Leg l) {
 			leg = l;
 		}
-		public void answerQuestion(String answer) {
-			if (answer == "walk") {
+		public boolean answerQuestion(FunApp answer) {
+			if (!answer.getIdent().equals("WalkOrTrans")) {
+				return false;
+			}
+			String id = ((FunApp)answer.getArgs().get(0)).getIdent();
+			if (id.equals("Walking")) {
 				leg.method(TravelMethod.WALK);
-			} else if (answer == "car") {
+			} else if (id.equals("Transportation")) {
 				leg.method(TravelMethod.DRIVE);
 			}
+			return true;
 		}
 
 		public String concreteQuestion() {
@@ -180,7 +184,7 @@ public class DirectionsForm {
 		public List<Question> questions() {
 			List<Question> questions = new ArrayList<Question>();
 			questions.addAll(this.destination.questions());
-			if (this.destination.equals(TravelMethod.UNKNOWN)) {
+			if (this.method.equals(TravelMethod.UNKNOWN)) {
 				questions.add(new TravelMethodQuestion(this));
 			}
 			return questions;

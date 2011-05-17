@@ -2,6 +2,5 @@
 <menu
   xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/find_path" android:title="Find path"></item>
-    <item android:id="@+id/exit" android:title="Exit"></item>
-<item android:id="@+id/your_location" android:title="Toggle follow your location"></item>
+	<item android:id="@+id/your_location" android:title="Toggle follow your location"></item>
 </menu>
