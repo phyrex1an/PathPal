@@ -8,6 +8,9 @@ abstract Locator = {
     
   fun
     GoTo : Dummy -> Phrase ;
+    GoByCarTo : Dummy -> Phrase ;
+    GoByCarFromTo : Dummy -> Dummy -> Phrase ;
+    WalkTo : Dummy -> Phrase;
     DString : Dummy ;
     GoFromTo : Dummy -> Dummy -> Phrase;
     FindStore : StoreType -> Phrase ; 
