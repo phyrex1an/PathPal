@@ -18,26 +18,26 @@ public class TranslatorApi {
 	public static boolean translateString(String inputString, DirectionsForm form, InputStream pgffile) throws FileNotFoundException, IOException, UnknownLanguageException {
 		FunApp f = (FunApp) parseString(inputString, pgffile);
 		if (f.getIdent().equals("GoFromTo")) {
-			form.startAt(((FunString) f.getArgs().get(0)).getString());
-			form.travelTo(((FunString) f.getArgs().get(1)).getString());
+			form.startAt(((FunString) f.getArgs().get(1)).getString());
+			form.travelTo(((FunString) f.getArgs().get(2)).getString());
 		} else if (f.getIdent().equals("GoTo")) {
-			form.travelTo(((FunString) f.getArgs().get(0)).getString());
+			form.travelTo(((FunString) f.getArgs().get(1)).getString());
 		} else if (f.getIdent().equals("GoByCarTo")) {
-			form.travelTo(((FunString) f.getArgs().get(0)).getString());
+			form.travelTo(((FunString) f.getArgs().get(1)).getString());
 			form.byCar();
 		} else if (f.getIdent().equals("GoByCarFromTo")) {
-			form.startAt(((FunString) f.getArgs().get(0)).getString());
-			form.travelTo(((FunString) f.getArgs().get(1)).getString());
+			form.startAt(((FunString) f.getArgs().get(1)).getString());
+			form.travelTo(((FunString) f.getArgs().get(2)).getString());
 			form.byCar();
 		} else if (f.getIdent().equals("GoFromToVia")){
-			form.startAt(((FunString) f.getArgs().get(0)).getString());
+			form.startAt(((FunString) f.getArgs().get(1)).getString());
+			form.travelTo(((FunString) f.getArgs().get(3)).getString());
+			form.startAt(((FunString) f.getArgs().get(3)).getString());
 			form.travelTo(((FunString) f.getArgs().get(2)).getString());
-			form.startAt(((FunString) f.getArgs().get(2)).getString());
-			form.travelTo(((FunString) f.getArgs().get(1)).getString());
 			
 		} else if (f.getIdent().equals("GoToVia")){
-			form.startAt(((FunString) f.getArgs().get(1)).getString());
-			form.travelTo(((FunString) f.getArgs().get(0)).getString());
+			form.startAt(((FunString) f.getArgs().get(2)).getString());
+			form.travelTo(((FunString) f.getArgs().get(1)).getString());
 		} else if (f.getIdent().equals("WalkOrTrans")){
 			if (((FunApp)f.getArgs().get(0)).getIdent().equals("Walking")){
 				form.byFoot();

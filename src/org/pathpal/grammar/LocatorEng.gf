@@ -1,17 +1,23 @@
+-- TODO
+-- need/want
+-- before i go to göteborg i want to go to abc
 concrete LocatorEng of Locator = {
   lincat
-    Phrase,StoreType,Answer,Dummy,TransItem,WalkItem= {s : Str} ;    
+    Phrase,StoreType,Answer,Dummy,TransItem,WalkItem,NeedWant= {s : Str} ;    
   lin
-    GoTo it = {s = "I need to go to" ++ it.s}  ;
-    GoByCarTo it = {s = "I want to go by car to" ++ it.s}  ;
-    GoByCarFromTo i i' = {s = "I want to go by car from" ++ i.s ++ "to" ++ i'.s}  ;
+    GoTo nw it = {s = "I" ++ nw.s ++ "to go to" ++ it.s}  ;
+    GoByCarTo nw it = {s = "I" ++ nw.s  ++ "to go by car to" ++ it.s}  ;
+    GoByCarFromTo nw i i' = {s = "I" ++ nw.s ++ "to go by car from" ++ i.s ++ "to" ++ i'.s}  ;
 
-    GoToVia i i' = {s = "I want to go to" ++ i.s ++ "via" ++ i'.s} ;
-    GoFromToVia i i' i'' = {s = "I want to go from" ++ i.s ++ "to" ++ i'.s ++ "via" ++ i''.s} ;
+    GoToVia nw i i' = {s = "I" ++ nw.s ++ "to go to" ++ i.s ++ "via" ++ i'.s} ;
+    GoFromToVia nw i i' i'' = {s = "I" ++ nw.s ++ "to go from" ++ i.s ++ "to" ++ i'.s ++ "via" ++ i''.s} ;
 
-    WalkTo it = {s = "I want to walk to" ++ it.s} ;
+    WalkTo nw it = {s = "I" ++ nw.s ++ "to walk to" ++ it.s} ;
 
-    GoFromTo it it' = {s = "I need to go from" ++ it.s ++ "to" ++ it'.s} ;
+    GoFromTo nw it it' = {s = "I" ++ nw.s ++ "to go from" ++ it.s ++ "to" ++ it'.s} ;
+    
+    Need = {s = "need"};
+    Want = {s = "want"};    
     FindStore it = {s = "Where is the nearest" ++ it.s ++ "store"} ;
     
     DString = {s = "dummy"} ;
@@ -20,6 +26,7 @@ concrete LocatorEng of Locator = {
     
     Walking i = {s = i.s} ;
     Transportation i = {s = i.s} ;
+
 
 
     Walk = {s ="Walk"};
