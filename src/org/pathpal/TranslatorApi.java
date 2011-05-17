@@ -21,7 +21,15 @@ public class TranslatorApi {
 			form.travelTo(((FunString) f.getArgs().get(1)).getString());
 		} else if (f.getIdent().equals("GoTo")) {
 			form.travelTo(((FunString) f.getArgs().get(0)).getString());
-		}
+		} else if (f.getIdent().equals("GoByCarTo")) {
+			form.travelTo(((FunString) f.getArgs().get(0)).getString());
+			form.byCar();
+		} else if (f.getIdent().equals("GoByCarFromTo")) {
+			form.startAt(((FunString) f.getArgs().get(0)).getString());
+			form.travelTo(((FunString) f.getArgs().get(1)).getString());
+			form.byCar();
+		} 
+		
 		return true;
 	}
 	
