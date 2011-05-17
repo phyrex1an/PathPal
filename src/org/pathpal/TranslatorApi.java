@@ -20,8 +20,8 @@ public class TranslatorApi {
 		if (f == null) {
 			return false;
 		} else if (f.getIdent().equals("GoFromTo")) {
-			form.startAt(((FunString) f.getArgs().get(0)).getString());
-			form.travelTo(((FunString) f.getArgs().get(1)).getString());
+			form.startAt(((FunString) f.getArgs().get(1)).getString());
+			form.travelTo(((FunString) f.getArgs().get(2)).getString());
 		} else if (f.getIdent().equals("GoTo")) {
 			form.travelTo(((FunString) f.getArgs().get(1)).getString());
 		} else if (f.getIdent().equals("GoByCarTo")) {
