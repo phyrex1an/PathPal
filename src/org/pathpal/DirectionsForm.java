@@ -3,6 +3,7 @@ package org.pathpal;
 import java.io.IOException;
 import java.util.*;
 
+import org.pathpal.translator.Fun;
 import org.pathpal.translator.FunApp;
 
 import com.amelie.driving.DrivingDirections.Mode;
@@ -98,15 +99,26 @@ public class DirectionsForm {
 		}
 
 		public String concreteQuestion() {
-			String question = "Do you want to go to ";
-			String places = "";
-			for (AddressPlace place : this.waypoints) {
-				if (!places.equals("")) {
-					places = places + ", ";
-				}
-				places = places + place.description;
+			FunApp fa;
+			List<Fun> args = new ArrayList<Fun>();
+			switch (this.waypoints.size()) {
+			case 1:	
+				fa = new FunApp("DString1", args);
+				break;
+			case 2:
+				fa = new FunApp("DString2", args);
+				break;
+			case 3:
+				fa = new FunApp("DString3", args);
+				break;
+			default:
+				throw new RuntimeException("Not enough DStringS");
 			}
-			return question + places + "?";
+			List<String> sargs = new ArrayList<String>();
+			for (AddressPlace arg : this.waypoints) {
+				sargs.add(arg.description);
+			}
+			return TranslatorApi.makeTranslation(fa,sargs);
 		}
 		
 	}
@@ -167,7 +179,7 @@ public class DirectionsForm {
 		}
 
 		public String concreteQuestion() {
-			return "Do you want to walk or go by car?";
+			return TranslatorApi.makeTranslation(new FunApp("WalkOrCar", new ArrayList<Fun>()));
 		}
 	}
 	
