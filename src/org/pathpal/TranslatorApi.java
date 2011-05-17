@@ -37,6 +37,13 @@ public class TranslatorApi {
 		} else if (f.getIdent().equals("GoToVia")){
 			form.startAt(((FunString) f.getArgs().get(1)).getString());
 			form.travelTo(((FunString) f.getArgs().get(0)).getString());
+		} else if (f.getIdent().equals("WalkOrTrans")){
+			if (((FunApp)f.getArgs().get(0)).getIdent().equals("Walking")){
+				form.byFoot();
+			}else {
+				form.byCar();
+			}
+				
 		}
 		
 		return true;

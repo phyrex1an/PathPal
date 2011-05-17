@@ -256,8 +256,16 @@ public class DirectionsForm {
 		return startAt(fromAddress(address));
 	}
 	
+	private void byMethod(TravelMethod method) {
+		travelPath.get(travelPath.size()-1).method = method;
+	}
+	
 	public void byCar() {
-		travelPath.get(travelPath.size()-1).method = TravelMethod.DRIVE;
+		byMethod(TravelMethod.DRIVE);
+	}
+	
+	public void byFoot() {
+		byMethod(TravelMethod.WALK);
 	}
 
 	public DirectionsForm travelTo(Waypoint destination) {
