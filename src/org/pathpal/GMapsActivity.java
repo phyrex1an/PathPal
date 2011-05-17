@@ -280,6 +280,7 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 	final int QUESTION_ID = 1;
 	final int GPS_NOT_LOADED_ID = 2;
 	final int UNKOWN_PARSE_STRING_ID = 3;
+	final int NO_GENERATE_QUESTION_ID = 4;
 	
 	@Override
 	protected Dialog onCreateDialog(int id) {
@@ -314,20 +315,20 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 			try {
 				question = TranslatorApi.makeTranslation(p.f, p.l, getResources().openRawResource(R.raw.questions));
 			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				showDialog(NO_GENERATE_QUESTION_ID);
+				return null;
 			} catch (NotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				showDialog(NO_GENERATE_QUESTION_ID);
+				return null;
 			} catch (LinearizerException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				showDialog(NO_GENERATE_QUESTION_ID);
+				return null;
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				showDialog(NO_GENERATE_QUESTION_ID);
+				return null;
 			} catch (UnknownLanguageException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				showDialog(NO_GENERATE_QUESTION_ID);
+				return null;
 			}
 			alert.setMessage(question);
 
@@ -365,6 +366,15 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 		}else if(id == UNKOWN_PARSE_STRING_ID){
 			AlertDialog.Builder build = new AlertDialog.Builder(this);
 			build.setMessage("I do not understand what you are saying. Please try something other..");
+			build.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.cancel();
+				}
+			});
+			return (build.create());
+		}else if(id == NO_GENERATE_QUESTION_ID){
+			AlertDialog.Builder build = new AlertDialog.Builder(this);
+			build.setMessage("Could not generate a question.");
 			build.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int which) {
 					dialog.cancel();
