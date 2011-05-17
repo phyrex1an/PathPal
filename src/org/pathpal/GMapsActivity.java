@@ -5,12 +5,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.http.impl.EnglishReasonPhraseCatalog;
 import org.grammaticalframework.UnknownLanguageException;
 import org.grammaticalframework.Linearizer.LinearizerException;
 import org.pathpal.DirectionsForm.FunStrings;
 import org.pathpal.DirectionsForm.Leg;
 import org.pathpal.DirectionsForm.Question;
 import org.pathpal.DirectionsForm.Waypoint;
+import org.pathpal.R.menu;
 import org.pathpal.translator.FunApp;
 
 import android.app.AlertDialog;
@@ -63,6 +65,10 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 	private DirectionsForm directionForm;
 	private Question activeQuestion;
 	private SearchApi api;
+	
+	private enum Language { SWEDISH, ENGLISH };
+	
+	private Language selectedLanguge = Language.ENGLISH;
 		
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -265,6 +271,9 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 					} catch (NullPointerException e){
 						showDialog(UNKOWN_PARSE_STRING_ID);
 						return;
+					}catch (RuntimeException e){
+						showDialog(UNKOWN_PARSE_STRING_ID);
+						return;
 					}
 				
 				// do all the overlay drawings on the map
@@ -426,6 +435,12 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 	    		showDialog(GPS_NOT_LOADED_ID);
 	    		return true;
 	    	}
+	    case R.id.swedish:
+	    	selectedLanguge = Language.SWEDISH;
+	    	return true;
+	    case R.id.english:
+	    	selectedLanguge = Language.ENGLISH;
+	    	return true;
 	    default:
 	        return super.onOptionsItemSelected(item);
 	    }
