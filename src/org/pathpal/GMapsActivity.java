@@ -261,7 +261,11 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 				    // The TranslatorApi update the directionForm
 				    // the inputstring nlp is passed to the TranslatorApi
 					try {
-						TranslatorApi.translateString(nlp, directionForm, getResources().openRawResource(R.raw.locator));
+						boolean trans_ok = TranslatorApi.translateString(nlp, directionForm, getResources().openRawResource(R.raw.locator));
+						if(!trans_ok){
+							showDialog(UNKOWN_PARSE_STRING_ID);
+							return;
+						}
 					} catch (FileNotFoundException e1) {
 						e1.printStackTrace();
 					} catch (IOException e1) {
@@ -269,9 +273,11 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 					} catch (UnknownLanguageException e1) {
 						e1.printStackTrace();
 					} catch (NullPointerException e){
+						e.printStackTrace();
 						showDialog(UNKOWN_PARSE_STRING_ID);
 						return;
 					}catch (RuntimeException e){
+						e.printStackTrace();
 						showDialog(UNKOWN_PARSE_STRING_ID);
 						return;
 					}
