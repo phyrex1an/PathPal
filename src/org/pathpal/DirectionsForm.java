@@ -396,6 +396,13 @@ public class DirectionsForm {
 	public DirectionsForm andBackHere() {
 		return this.travelTo(new CurrentLocation());
 	}
+	
+	public DirectionsForm noTo(String address) {
+		if (!this.travelPath.isEmpty()) {
+			this.travelPath.remove(this.travelPath.size()-1);
+		}
+		return this.travelTo(address);
+	}
 
 	public List<Leg> getTravelPath() {
 		return new ArrayList<Leg>(travelPath);
@@ -439,7 +446,7 @@ public class DirectionsForm {
 	public List<Question> questions() {
 		List<Question> questions = new ArrayList<Question>();
 		questions.addAll(this.startAt.questions(this));
-		if (this.travelPath.size() == 0) {
+		if (this.travelPath.isEmpty()) {
 			questions.add(new GoToQuestion(this));
 		} else {
 			for (Leg l : this.travelPath) {
