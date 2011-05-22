@@ -5,7 +5,7 @@ concrete LocatorEng of Locator = {
     Phrase,StoreType,Answer,Dummy,TransItem,ViaDummy,
     WalkItem,NeedWant,GoItem,FromDummy,ToDummy= {s : Str} ;    
   lin
-    INeedWantTo i g = {s= "I" ++ i.s ++ "to" ++ g.s};
+    INeedWantTo i g = {s= "I" ++ i.s ++ "to"  ++ g.s};
     AndThen i = {s = "And then" ++ i.s};
     JustGo i = {s = i.s} ;
 
@@ -18,9 +18,9 @@ concrete LocatorEng of Locator = {
     GoByCarFromTo i i' = {s = "go by car" ++ i.s ++ i'.s}  ;
 
     GoToVia i i' = {s = "go" ++ i.s ++ i'.s} ;
-    GoFromToVia i i' i'' = {s = "go from" ++ i.s ++ i'.s ++ i''.s} ;
+    GoFromToVia i i' i'' = {s = "go" ++ i.s ++ i'.s ++ i''.s} ;
 
-    WalkTo it = {s = "walk to" ++ it.s} ;
+    WalkTo it = {s = "walk" ++ it.s} ;
 
     GoFromTo it it' = {s = "go" ++ it.s ++ it'.s} ;
     

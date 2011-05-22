@@ -15,6 +15,7 @@ import org.pathpal.translator.FunApp;
 import org.pathpal.translator.FunString;
 
 public class TranslatorApi {
+	
 	public static boolean translateString(String inputString, DirectionsForm form, InputStream pgffile) throws FileNotFoundException, IOException, UnknownLanguageException {
 		if (inputString.trim().equals("")) { 
 			return false;
@@ -24,65 +25,15 @@ public class TranslatorApi {
 			return false;
 		} else if(f.getIdent().equals("INeedWantTo")){ 
 			f = (FunApp) f.getArgs().get(1);
-			if (f.getIdent().equals("GoFromTo")) {
-				form.startAt(((FunString) f.getArgs().get(0)).getString());
-				form.travelTo(((FunString) f.getArgs().get(1)).getString());
-			} else if (f.getIdent().equals("GoTo")) {
-				form.travelTo(((FunString) f.getArgs().get(0)).getString());
-			} else if (f.getIdent().equals("GoByCarTo")) {
-				form.byCar();
-				form.travelTo(((FunString) f.getArgs().get(0)).getString());
-			} else if (f.getIdent().equals("GoFromTo")) {
-				form.reset();
-				form.startAt(((FunString) f.getArgs().get(0)).getString());
-				form.travelTo(((FunString) f.getArgs().get(1)).getString());
-			} else if (f.getIdent().equals("GoTo")) {
-				form.reset();
-				form.travelTo(((FunString) f.getArgs().get(0)).getString());
-			} else if (f.getIdent().equals("GoByCarTo")) {
-				form.reset();
-				form.travelTo(((FunString) f.getArgs().get(0)).getString());
-				form.byCar();
-			} else if (f.getIdent().equals("GoByCarFromTo")) {
-				form.reset();
-				form.startAt(((FunString) f.getArgs().get(0)).getString());
-				form.travelTo(((FunString) f.getArgs().get(1)).getString());
-				form.byCar();
-			} else if (f.getIdent().equals("GoFromToVia")){
-				form.reset();
-				form.startAt(((FunString) f.getArgs().get(0)).getString());
-				form.travelTo(((FunString) f.getArgs().get(2)).getString());
-				form.travelTo(((FunString) f.getArgs().get(1)).getString());
-				
-			} else if (f.getIdent().equals("GoToVia")){
-				form.reset();
-				form.travelTo(((FunString) f.getArgs().get(1)).getString());
-				form.travelTo(((FunString) f.getArgs().get(0)).getString());
-			}
+			translateGoItem(f,form);
 		}
 		else if(f.getIdent().equals("AndThen")){ 
 			f = (FunApp) f.getArgs().get(0);
-			if (f.getIdent().equals("GoFromTo")) {
-				form.startAt(((FunString) f.getArgs().get(0)).getString());
-				form.travelTo(((FunString) f.getArgs().get(1)).getString());
-			} else if (f.getIdent().equals("GoTo")) {
-				form.travelTo(((FunString) f.getArgs().get(0)).getString());
-			} else if (f.getIdent().equals("GoByCarTo")) {
-				form.travelTo(((FunString) f.getArgs().get(0)).getString());
-				form.byCar();
-			} else if (f.getIdent().equals("GoByCarFromTo")) {
-				form.startAt(((FunString) f.getArgs().get(0)).getString());
-				form.travelTo(((FunString) f.getArgs().get(1)).getString());
-				form.byCar();
-			} else if (f.getIdent().equals("GoFromToVia")){
-				form.startAt(((FunString) f.getArgs().get(0)).getString());
-				form.travelTo(((FunString) f.getArgs().get(2)).getString());
-				form.travelTo(((FunString) f.getArgs().get(1)).getString());
-				
-			} else if (f.getIdent().equals("GoToVia")){
-				form.travelTo(((FunString) f.getArgs().get(1)).getString());
-				form.travelTo(((FunString) f.getArgs().get(0)).getString());
-			}
+			translateGoItem(f,form);
+		}
+		else if(f.getIdent().equals("JustGo")){ 
+			f = (FunApp) f.getArgs().get(0);
+			translateGoItem(f,form);
 		}
 		else if (f.getIdent().equals("WalkOrTrans")){
 				if (((FunApp)f.getArgs().get(0)).getIdent().equals("Walking")){
@@ -90,10 +41,64 @@ public class TranslatorApi {
 				}else {
 					form.byCar();
 				}
-					
 		} else if (f.getIdent().equals("ProbablyAnAddress")) {
 			form.reset();
 			form.travelTo(((FunString) f.getArgs().get(0)).getString());
+		}
+		return true;
+	}
+	
+	public static String fromDummy(FunApp f){
+       return ((FunString) f.getArgs().get(0)).getString();
+	}
+	
+	public static boolean translateGoItem(FunApp f,DirectionsForm form){
+		String ident = f.getIdent();
+		if (ident.equals("GoFromTo")) {
+			form.startAt(fromDummy((FunApp)f.getArgs().get(0)));
+			form.travelTo(fromDummy((FunApp)f.getArgs().get(1)));
+		}
+		else if (ident.equals("GoTo")) {
+			form.travelTo(fromDummy((FunApp)f.getArgs().get(0)));
+		} else if (ident.equals("GoByCarTo")) {
+			form.byCar();
+			form.travelTo(fromDummy((FunApp)f.getArgs().get(0)));
+		} else if (ident.equals("GoFromTo")) {
+			form.reset();
+			form.startAt(fromDummy((FunApp)f.getArgs().get(0)));
+			form.travelTo(fromDummy((FunApp)f.getArgs().get(1)));
+		} else if (ident.equals("GoTo")) {
+			form.reset();
+			form.travelTo(fromDummy((FunApp)f.getArgs().get(0)));
+		} else if (ident.equals("GoByCarTo")) {
+			form.reset();
+			form.travelTo(fromDummy((FunApp)f.getArgs().get(0)));
+			form.byCar();
+		} else if (ident.equals("GoByCarFromTo")) {
+			form.reset();
+			form.startAt(fromDummy((FunApp)f.getArgs().get(0)));
+			form.travelTo(fromDummy((FunApp)f.getArgs().get(1)));
+			form.byCar();
+		} else if (ident.equals("GoFromToVia")){
+			form.reset();
+			form.startAt(fromDummy((FunApp)f.getArgs().get(0)));
+			form.travelTo(fromDummy((FunApp)f.getArgs().get(2)));
+			form.travelTo(fromDummy((FunApp)f.getArgs().get(1)));
+		} else if (ident.equals("GoToVia")){
+			form.reset();
+			form.travelTo(fromDummy((FunApp)f.getArgs().get(1)));
+			form.travelTo(fromDummy((FunApp)f.getArgs().get(0)));
+		}else if (ident.equals("GoFrom")){
+			form.startAt(fromDummy((FunApp)f.getArgs().get(0)));
+		}else if (ident.equals("FromTo")){
+			form.reset();
+			form.travelTo(fromDummy((FunApp)f.getArgs().get(1)));
+			form.startAt(fromDummy((FunApp)f.getArgs().get(0)));
+		}else if (ident.equals("GoTo2")){
+			form.travelTo(fromDummy((FunApp)f.getArgs().get(0)));
+		}else if (ident.equals("WalkTo")){
+			form.travelTo(fromDummy((FunApp)f.getArgs().get(0)));
+			form.byFoot();
 		}
 		return true;
 	}

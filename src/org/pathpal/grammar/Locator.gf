@@ -27,6 +27,7 @@ abstract Locator = {
     GoFromToVia : FromDummy -> ToDummy -> ViaDummy -> GoItem;
     WalkTo : ToDummy -> GoItem;
     GoFromTo : FromDummy -> ToDummy -> GoItem;
+
     To : Dummy -> ToDummy;
     From : Dummy -> FromDummy;
     Via : Dummy -> ViaDummy;
