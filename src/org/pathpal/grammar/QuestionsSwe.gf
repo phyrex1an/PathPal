@@ -8,4 +8,5 @@ concrete QuestionsSwe of Questions = {
     DString3 = {s = "dummy, dummy or dummy"} ;
     WalkOrCar = {s = "Vill du gå eller åka bil ?"} ;
     WalkOrCarTo d = {s = "Vill du gå eller åka bil till" ++ d.s ++ "?"} ;
+    UnrecognizedWaypoint d  = {s = "Känner inte igen " ++ d.s ++ ", vart vill du åka?"} ; 
 }

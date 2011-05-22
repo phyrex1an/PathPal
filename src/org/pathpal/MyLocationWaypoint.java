@@ -29,7 +29,7 @@ public class MyLocationWaypoint implements Waypoint {
 		return (((double)l) / 1000000);
 	}
 
-	public List<Question> questions(WaypointInfo w) {
+	public List<Question> questions(DirectionsForm form, WaypointInfo w) {
 		// TODO Auto-generated method stub
 		return new ArrayList<Question>();
 	}

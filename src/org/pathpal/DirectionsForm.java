@@ -38,8 +38,8 @@ public class DirectionsForm {
 			waypoint = w;
 		}
 		
-		public List<Question> questions() {
-			return this.waypoint.questions(this);
+		public List<Question> questions(DirectionsForm form) {
+			return this.waypoint.questions(form, this);
 		}
 	}
 	
@@ -60,7 +60,7 @@ public class DirectionsForm {
 	// location
 	public interface Waypoint {
 		public AddressPlace findAddress(SearchApi api) throws IOException;
-		public List<Question> questions(WaypointInfo w);
+		public List<Question> questions(DirectionsForm form, WaypointInfo w);
 		public String name();
 	}
 	
@@ -82,7 +82,7 @@ public class DirectionsForm {
 			AddressPlace l = new AddressPlace(g, a.getFeatureName());
 			return l;
 		}
-		public List<Question> questions(WaypointInfo w) {
+		public List<Question> questions(DirectionsForm form, WaypointInfo w) {
 			return new ArrayList<Question>();
 		}
 		public String name() {
@@ -95,7 +95,7 @@ public class DirectionsForm {
 			return api.startLocation;
 		}
 
-		public List<Question> questions(WaypointInfo w) {
+		public List<Question> questions(DirectionsForm form, WaypointInfo w) {
 			return new ArrayList<Question>();
 		}
 
@@ -116,14 +116,10 @@ public class DirectionsForm {
 		}
 
 		public boolean answerQuestion(FunApp answer) {
-			System.out.println("Ident: " + answer.getIdent());
 			if (answer.getIdent().equals("ProbablyAnAddress")) {
 				String a = ((FunString) answer.getArgs().get(0)).getString();
-				System.out.println("Got answer: " +a);
 				for (AddressPlace address : this.waypoints) {
-					System.out.println("Testing against: " + address.description);
 					if (address.description.equals(a)) {
-						System.out.println("MATCH!");
 						this.waypointinfo.waypoint = new UnambiguousWaypoint(address);
 						return true;
 					}
@@ -152,7 +148,7 @@ public class DirectionsForm {
 			for (AddressPlace arg : this.waypoints) {
 				sargs.add(arg.description);
 			}
-			return new FunStrings(fa, sargs);
+			return new FunStrings(new FunApp("AskGoTo", Collections.singletonList(fa)), sargs);
 		}
 		
 	}
@@ -171,7 +167,7 @@ public class DirectionsForm {
 			return this.waypoints.get(0);
 		}
 
-		public List<Question> questions(WaypointInfo w) {
+		public List<Question> questions(DirectionsForm form, WaypointInfo w) {
 			List<Question> questions = new ArrayList<Question>();
 			questions.add(new AmbiguousWaypointQuestion(waypoints, w));
 			return questions;
@@ -193,13 +189,70 @@ public class DirectionsForm {
 			return this.address;
 		}
 
-		public List<Question> questions(WaypointInfo w) {
+		public List<Question> questions(DirectionsForm form, WaypointInfo w) {
 			return new ArrayList<Question>();
 		}
 
 		public String name() {
 			return address.description;
 		}
+	}
+
+	private class UnknownWaypointQuestion implements Question {
+		private String name;
+		private WaypointInfo w;
+		private DirectionsForm form;
+
+		UnknownWaypointQuestion(DirectionsForm form, WaypointInfo w, String name) {
+			this.form = form;
+			this.w = w;
+			this.name = name;
+		}
+		
+		public boolean answerQuestion(FunApp answer) {
+			if (answer.getIdent().equals("ProbablyAnAddress")) {
+				String a = ((FunString) answer.getArgs().get(0)).getString();
+				this.w.waypoint = form.fromAddress(a);
+				return true;
+			}
+			return false;
+		}
+
+		public FunStrings concreteQuestion() {
+			return new FunStrings(
+					new FunApp("UnrecognizedWaypoint", 
+							Collections.singletonList(
+									new FunApp("DString1", 
+											(List<? extends Fun>) Collections.emptyList()
+									)
+							)
+					),
+					Collections.singletonList(name)
+			);
+		}
+	}
+	
+	private class UnknownWaypoint implements Waypoint {
+
+		private String name;
+
+		UnknownWaypoint(String name) {
+			this.name = name;
+		}
+		public AddressPlace findAddress(SearchApi api) throws IOException {
+			return null;
+		}
+
+		public String name() {
+			return name;
+		}
+
+		public List<Question> questions(DirectionsForm form, WaypointInfo w) {
+			List<Question> q = new ArrayList<Question>();
+			q.add(new UnknownWaypointQuestion(form, w, name));
+			return q;
+		}
+		
 	}
 	
 	public class TravelMethodQuestion implements Question {
@@ -249,9 +302,9 @@ public class DirectionsForm {
 			this.method = method;
 		}
 		
-		public List<Question> questions() {
+		public List<Question> questions(DirectionsForm form) {
 			List<Question> questions = new ArrayList<Question>();
-			questions.addAll(this.destination.questions());
+			questions.addAll(this.destination.questions(form));
 			if (this.method.equals(TravelMethod.UNKNOWN)) {
 				questions.add(new TravelMethodQuestion(this));
 			}
@@ -297,13 +350,11 @@ public class DirectionsForm {
 		Waypoint w;
 		switch (places.size()) {
 		case 0:
-			throw new RuntimeException("no path");
-			//w = new UnknownWaypoint();
-			//break;
+			w = new UnknownWaypoint(address);
+			break;
 		case 1:
 			w = new UnambiguousWaypoint(places.get(0));
 			break;
-			
 		default:
 			w = new AmbiguousWaypoint(places);
 			break;
@@ -346,9 +397,9 @@ public class DirectionsForm {
 	
 	public List<Question> questions() {
 		List<Question> questions = new ArrayList<Question>();
-		questions.addAll(this.startAt.questions());
+		questions.addAll(this.startAt.questions(this));
 		for (Leg l : this.travelPath) {
-			questions.addAll(l.questions());
+			questions.addAll(l.questions(this));
 		}
 		return questions;
 	}

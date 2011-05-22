@@ -214,10 +214,6 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 				// set the next legs starting Address to the this legs ending address 
 				fromAddress = toAddress;
 			}				
-		
-			// Check if there are still some questions which have not been answered
-			questionHandler();
-		
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (IndexOutOfBoundsException e){
@@ -235,7 +231,9 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 			activeQuestion = directionForm.questions().get(0); // select a question as active
 			removeDialog(QUESTION_ID); // clean up the dialog first
 			showDialog(QUESTION_ID);   // then show the dialog
-		}		
+		} else {
+			updatePath();
+		}
 	}
 
 	@Override
@@ -277,7 +275,7 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 					}
 				
 				// do all the overlay drawings on the map
-				updatePath();
+				questionHandler();
 			} 
 		}
 			
@@ -323,21 +321,8 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 			FunStrings p = activeQuestion.concreteQuestion();
 			try {
 				question = TranslatorApi.makeTranslation(p.f, p.l, getResources().openRawResource(R.raw.questions));
-			} catch (FileNotFoundException e) {
-				showDialog(NO_GENERATE_QUESTION_ID);
-				return null;
-			} catch (NotFoundException e) {
-				showDialog(NO_GENERATE_QUESTION_ID);
-				return null;
-			} catch (LinearizerException e) {
-				showDialog(NO_GENERATE_QUESTION_ID);
-				return null;
-			} catch (IOException e) {
-				showDialog(NO_GENERATE_QUESTION_ID);
-				return null;
-			} catch (UnknownLanguageException e) {
-				showDialog(NO_GENERATE_QUESTION_ID);
-				return null;
+			} catch (Exception e) {
+				throw new RuntimeException(e);
 			}
 			alert.setMessage(question);
 
@@ -353,7 +338,7 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 						if(abstractAnswer != null){
 							activeQuestion.answerQuestion(abstractAnswer);
 						}
-						updatePath();
+						questionHandler();
 					}catch (FileNotFoundException e1) {
 						e1.printStackTrace();
 					} catch (IOException e1) {
