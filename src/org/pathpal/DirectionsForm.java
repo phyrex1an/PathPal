@@ -117,9 +117,9 @@ public class DirectionsForm {
 
 		public boolean answerQuestion(FunApp answer) {
 			if (answer.getIdent().equals("ProbablyAnAddress")) {
-				String a = ((FunString) answer.getArgs().get(0)).getString();
+				String a = ((FunString) answer.getArgs().get(0)).getString().toLowerCase();
 				for (AddressPlace address : this.waypoints) {
-					if (address.description.equals(a)) {
+					if (address.description.toLowerCase().equals(a)) {
 						this.waypointinfo.waypoint = new UnambiguousWaypoint(address);
 						return true;
 					}
