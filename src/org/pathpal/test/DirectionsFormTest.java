@@ -60,7 +60,7 @@ public class DirectionsFormTest extends TestCase {
 			return null;
 		}
 
-		public List<Question> questions(WaypointInfo w) {
+		public List<Question> questions(DirectionsForm form, WaypointInfo w) {
 			// TODO Auto-generated method stub
 			return null;
 		}

@@ -20,7 +20,7 @@ public class TranslatorApi {
 		if (inputString.trim().equals("")) { 
 			return false;
 		}
-		FunApp f = (FunApp) parseString(inputString, pgffile);
+		FunApp f = (FunApp) parseString(inputString.toLowerCase(), pgffile);
 		if (f == null) {
 			return false;
 		} else if(f.getIdent().equals("INeedWantTo")){ 

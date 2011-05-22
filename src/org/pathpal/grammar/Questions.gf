@@ -10,4 +10,5 @@ abstract Questions = {
     DString3 : DummyString ;
     WalkOrCar : Question ;
     WalkOrCarTo : DummyString -> Question ;
+    UnrecognizedWaypoint : DummyString -> Question ;
 }

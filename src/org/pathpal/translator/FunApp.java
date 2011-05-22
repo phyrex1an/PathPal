@@ -4,8 +4,8 @@ import java.util.*;
 
 public class FunApp implements Fun {
 	private String ident;
-	private LinkedList<Fun> args;
-	public FunApp(String ident, LinkedList<Fun> args) {
+	private List<? extends Fun> args;
+	public FunApp(String ident, List<? extends Fun> args) {
 		this.setIdent(ident);
 		this.setArgs(args);
 	}
@@ -15,10 +15,10 @@ public class FunApp implements Fun {
 	public String getIdent() {
 		return ident;
 	}
-	public void setArgs(LinkedList<Fun> args2) {
+	public void setArgs(List<? extends Fun> args2) {
 		this.args = args2;
 	}
-	public List<Fun> getArgs() {
+	public List<? extends Fun> getArgs() {
 		return args;
 	}
 	public String toString() {
