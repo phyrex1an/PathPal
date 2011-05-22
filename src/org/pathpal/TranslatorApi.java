@@ -64,6 +64,8 @@ public class TranslatorApi {
 		}
 		else if (ident.equals("GoTo")) {
 			form.travelTo(fromDummy((FunApp)f.getArgs().get(0)));
+		} else if (ident.equals("GoByCar")) {
+			form.byCar();
 		} else if (ident.equals("GoByCarTo")) {
 			form.byCar();
 			form.travelTo(fromDummy((FunApp)f.getArgs().get(0)));
