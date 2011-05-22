@@ -8,15 +8,18 @@ abstract Locator = {
     TransItem;
     WalkItem;
     NeedWant;
+    GoItem;
   fun
-    GoTo : NeedWant -> Dummy -> Phrase ;
-    GoByCarTo : NeedWant -> Dummy -> Phrase ;
-    GoByCarFromTo : NeedWant -> Dummy -> Dummy -> Phrase ;
-    GoToVia : NeedWant -> Dummy -> Dummy -> Phrase; 
-    GoFromToVia : NeedWant -> Dummy -> Dummy -> Dummy -> Phrase;
-    WalkTo : NeedWant -> Dummy -> Phrase;
+    AndThen : GoItem -> Phrase; 
+    INeedWantTo : NeedWant -> GoItem -> Phrase; 
+    GoTo : Dummy -> GoItem ;
+    GoByCarTo : Dummy -> GoItem ;
+    GoByCarFromTo : Dummy -> Dummy -> GoItem ;
+    GoToVia : Dummy -> Dummy -> GoItem; 
+    GoFromToVia : Dummy -> Dummy -> Dummy -> GoItem;
+    WalkTo : Dummy -> GoItem;
     DString : Dummy ;
-    GoFromTo : NeedWant -> Dummy -> Dummy -> Phrase;
+    GoFromTo :  Dummy -> Dummy -> Phrase;
     FindStore : StoreType -> Phrase ; 
     WalkOrTrans : Answer -> Phrase;
     Walking : WalkItem -> Answer;

@@ -3,4 +3,6 @@
   xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/find_path" android:title="Find path"></item>
 	<item android:id="@+id/your_location" android:title="Toggle follow your location"></item>
+	<item android:id="@+id/swedish" android:title="Swedish"></item>
+	<item android:id="@+id/english" android:title="English"></item>
 </menu>

@@ -27,20 +27,30 @@ public class translateStringTest extends TestCase {
 		assertTrue(form.travelTo.equals("abc"));
 		assertTrue(form.byCar == true);
 		
+		form = new MockDirectionsForm();
 		st = new FileInputStream("res/raw/locator.pgf") ;
 		assertTrue(TranslatorApi.translateString("I want to go from Dixon to Trixon via Lixon",form,st));
 		assertTrue(form.travelTo.equals("Trixon"));
-		assertTrue(form.startAt.equals("Lixon"));
+		assertTrue(form.startAt.equals("Dixon"));
 		
+		form = new MockDirectionsForm();
 		st = new FileInputStream("res/raw/locator.pgf") ;
 		assertTrue(TranslatorApi.translateString("I need to go from Dixon to Trixon via Lixon",form,st));
 		assertTrue(form.travelTo.equals("Trixon"));
-		assertTrue(form.startAt.equals("Lixon"));
+		assertTrue(form.startAt.equals("Dixon"));
 		
+		form = new MockDirectionsForm();
+		st = new FileInputStream("res/raw/locator.pgf") ;
+		assertTrue(TranslatorApi.translateString("And then go from Dixon to Trixon via Lixon",form,st));
+		assertTrue(form.travelTo.equals("Trixon"));
+		assertTrue(form.startAt.equals("Dixon"));
+		
+		form = new MockDirectionsForm();
 		st = new FileInputStream("res/raw/locator.pgf") ;
 		assertTrue(TranslatorApi.translateString("By Car",form,st));
 		assertTrue(form.byCar);
 		
+		form = new MockDirectionsForm();
 		st = new FileInputStream("res/raw/locator.pgf") ;	
 		assertTrue(TranslatorApi.translateString("By Foot",form,st));
 		assertTrue(form.byFoot);
