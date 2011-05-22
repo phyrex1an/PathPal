@@ -19,7 +19,7 @@ abstract Locator = {
     GoFromToVia : Dummy -> Dummy -> Dummy -> GoItem;
     WalkTo : Dummy -> GoItem;
     DString : Dummy ;
-    GoFromTo :  Dummy -> Dummy -> Phrase;
+    GoFromTo :  Dummy -> Dummy -> GoItem;
     FindStore : StoreType -> Phrase ; 
     WalkOrTrans : Answer -> Phrase;
     Walking : WalkItem -> Answer;
