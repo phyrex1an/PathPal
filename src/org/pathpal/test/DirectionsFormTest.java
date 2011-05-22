@@ -64,5 +64,10 @@ public class DirectionsFormTest extends TestCase {
 			// TODO Auto-generated method stub
 			return null;
 		}
+
+		public String name() {
+			// TODO Auto-generated method stub
+			return null;
+		}
 	}
 }
