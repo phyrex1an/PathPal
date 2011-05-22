@@ -246,7 +246,7 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 				// Get the input string in natural language
 				// which should be passed to GF through the TranslatorApi
 				Bundle d = data.getExtras();				
-				String nlp = d.get("nlp").toString();
+				String nlp = d.get("nlp").toString().toLowerCase();
 				
 				// Get your current location and create a new SearchApi with your current location
 				AddressPlace l = new AddressPlace(myLocationOverlay.getGeoPoint(), "You are here");				
@@ -353,7 +353,7 @@ public class GMapsActivity extends MapActivity implements IDirectionsListener, L
 
 			alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int whichButton) {
-					String value = input.getText().toString();
+					String value = input.getText().toString().toLowerCase();
 					try{
 						FunApp abstractAnswer = (FunApp) TranslatorApi.parseString(value, getResources().openRawResource(R.raw.locator));
 						if(abstractAnswer != null){
