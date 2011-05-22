@@ -40,7 +40,7 @@ public class translateStringTest extends TestCase {
 		assertTrue(form.startAt.equals("Dixon"));
 		
 		form = new MockDirectionsForm();
-		st = new FileInputStream("res/raw/locator.pgf") ;
+		st = new FileInputStream("res/raw/locator.pgf") ;	
 		assertTrue(TranslatorApi.translateString("And then go from Dixon to Trixon via Lixon",form,st));
 		assertTrue(form.travelTo.equals("Trixon"));
 		assertTrue(form.startAt.equals("Dixon"));
