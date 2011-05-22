@@ -21,6 +21,10 @@ public class TranslatorApi {
 			return false;
 		}
 		FunApp f = (FunApp) parseString(inputString.toLowerCase(), pgffile);
+		return fromJPGFTree(form, f);
+	}
+
+	public static boolean fromJPGFTree(DirectionsForm form, FunApp f) {
 		if (f == null) {
 			return false;
 		} else if(f.getIdent().equals("INeedWantTo")){ 

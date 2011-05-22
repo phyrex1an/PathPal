@@ -284,11 +284,12 @@ public class DirectionsForm {
 	}
 	
 	public class Leg {
-		Leg(Waypoint destination) {
+		Leg(Waypoint destination, TravelMethod method) {
 			this.destination.waypoint = destination;
+			this.method = method;
 		}
 		private WaypointInfo destination = new WaypointInfo(null);
-		private TravelMethod method = TravelMethod.UNKNOWN;
+		private TravelMethod method;
 		
 		public Waypoint destination() {
 			return destination.waypoint;
@@ -312,6 +313,7 @@ public class DirectionsForm {
 		}
 	}
 
+	private TravelMethod defaultMethod = TravelMethod.UNKNOWN;
 	private WaypointInfo startAt = new WaypointInfo(null);
 	private List<Leg> travelPath;
 	private SearchApi api;
@@ -322,6 +324,7 @@ public class DirectionsForm {
 	}
 	
 	public void reset() {
+		this.defaultMethod = TravelMethod.UNKNOWN;
 		this.startAt.waypoint = new CurrentLocation();
 		this.travelPath = new ArrayList<Leg>();
 	}
@@ -367,7 +370,10 @@ public class DirectionsForm {
 	}
 	
 	private void byMethod(TravelMethod method) {
-		travelPath.get(travelPath.size()-1).method = method;
+		this.defaultMethod = method;
+		if (travelPath.size() > 0) {
+			travelPath.get(travelPath.size()-1).method = method;
+		}
 	}
 	
 	public void byCar() {
@@ -379,7 +385,7 @@ public class DirectionsForm {
 	}
 
 	public DirectionsForm travelTo(Waypoint destination) {
-		this.travelPath.add(new Leg(destination));
+		this.travelPath.add(new Leg(destination, this.defaultMethod));
 		return this;
 	}
 	
@@ -395,11 +401,50 @@ public class DirectionsForm {
 		return new ArrayList<Leg>(travelPath);
 	}
 	
+	
+	private class GoToQuestion implements Question {
+		private DirectionsForm form;
+
+		GoToQuestion(DirectionsForm form) {
+			this.form = form;
+		}
+		public boolean answerQuestion(FunApp answer) {
+			return TranslatorApi.fromJPGFTree(form, answer);
+		}
+
+		public FunStrings concreteQuestion() {
+			String how;
+			String with = null;
+			List<FunApp> what = new ArrayList<FunApp>();
+			switch (this.form.defaultMethod) {
+			case DRIVE:
+				with = "Car";
+				// no break
+			case WALK:
+				with = (with == null) ? "Walk" : with ;
+				how = "WhereToGoBy";
+				what.add(new FunApp(with, Collections.EMPTY_LIST));
+				break;
+			case UNKNOWN:
+				how = "WhereToGo"; 
+				break;
+			default:
+				throw new RuntimeException("Exhaustive switch wasn't exhaustive.");
+			}
+			System.out.println(new FunApp(how, what).toString());
+			return new FunStrings(new FunApp(how, what), Collections.EMPTY_LIST);
+		}
+	}
+	
 	public List<Question> questions() {
 		List<Question> questions = new ArrayList<Question>();
 		questions.addAll(this.startAt.questions(this));
-		for (Leg l : this.travelPath) {
-			questions.addAll(l.questions(this));
+		if (this.travelPath.size() == 0) {
+			questions.add(new GoToQuestion(this));
+		} else {
+			for (Leg l : this.travelPath) {
+				questions.addAll(l.questions(this));
+			}
 		}
 		return questions;
 	}

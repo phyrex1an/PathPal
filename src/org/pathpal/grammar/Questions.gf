@@ -1,7 +1,7 @@
 abstract Questions = {
   flags startcat = Question ;
   cat
-    Question; DummyString ;
+    Question; DummyString; TravelMethod ;
 
   fun
     AskGoTo : DummyString -> Question ;
@@ -11,4 +11,8 @@ abstract Questions = {
     WalkOrCar : Question ;
     WalkOrCarTo : DummyString -> Question ;
     UnrecognizedWaypoint : DummyString -> Question ;
+    WhereToGo : Question ; 
+    WhereToGoBy : TravelMethod -> Question ;
+    Car : TravelMethod ;
+    Walk : TravelMethod ;
 }
