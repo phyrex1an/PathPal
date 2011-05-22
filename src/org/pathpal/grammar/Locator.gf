@@ -17,6 +17,8 @@ abstract Locator = {
     INeedWantTo : NeedWant -> GoItem -> Phrase; 
     JustGo : GoItem -> Phrase ;
 
+    NoTo : ToDummy -> GoItem;
+    NoTo2 : ToDummy -> GoItem;
     GoTo : ToDummy -> GoItem ;
     GoTo2 : ToDummy -> GoItem;
     FromTo : FromDummy -> ToDummy -> GoItem;

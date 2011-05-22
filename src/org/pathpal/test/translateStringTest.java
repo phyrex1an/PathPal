@@ -30,54 +30,54 @@ public class translateStringTest extends TestCase {
 		form = new MockDirectionsForm();
 		st = new FileInputStream("res/raw/locator.pgf") ;
 		assertTrue(TranslatorApi.translateString("I want to go from Dixon to Trixon via Lixon",form,st));
-		assertTrue(form.travelTo.equals("Trixon"));
-		assertTrue(form.startAt.equals("Dixon"));
+		assertTrue(form.travelTo.equals("trixon"));
+		assertTrue(form.startAt.equals("dixon"));
 		
 		form = new MockDirectionsForm();
 		st = new FileInputStream("res/raw/locator.pgf") ;
 		assertTrue(TranslatorApi.translateString("I need to go from Dixon to Trixon via Lixon",form,st));
-		assertTrue(form.travelTo.equals("Trixon"));
-		assertTrue(form.startAt.equals("Dixon"));
+		assertTrue(form.travelTo.equals("trixon"));
+		assertTrue(form.startAt.equals("dixon"));
 		
 		form = new MockDirectionsForm();
 		st = new FileInputStream("res/raw/locator.pgf") ;	
 		assertTrue(TranslatorApi.translateString("And then go from Dixon to Trixon via Lixon",form,st));
-		assertTrue(form.travelTo.equals("Trixon"));
-		assertTrue(form.startAt.equals("Dixon"));
+		assertTrue(form.travelTo.equals("trixon"));
+		assertTrue(form.startAt.equals("dixon"));
 		
 		form = new MockDirectionsForm();
 		st = new FileInputStream("res/raw/locator.pgf") ;
 		assertTrue(TranslatorApi.translateString("And then go to Trixon",form,st));
-		assertTrue(form.travelTo.equals("Trixon"));
+		assertTrue(form.travelTo.equals("trixon"));
 		
 		
 		form = new MockDirectionsForm();
 		st = new FileInputStream("res/raw/locator.pgf") ;
 		assertTrue(TranslatorApi.translateString("I need to go from Dixon to Trixon",form,st));
-		assertTrue(form.travelTo.equals("Trixon"));
-		assertTrue(form.startAt.equals("Dixon"));
+		assertTrue(form.travelTo.equals("trixon"));
+		assertTrue(form.startAt.equals("dixon"));
 		
 		form = new MockDirectionsForm();
 		st = new FileInputStream("res/raw/locator.pgf") ;
 		assertTrue(TranslatorApi.translateString("from Dixon",form,st));
-		assertTrue(form.startAt.equals("Dixon"));
+		assertTrue(form.startAt.equals("dixon"));
 		
 		form = new MockDirectionsForm();
 		st = new FileInputStream("res/raw/locator.pgf") ;
 		assertTrue(TranslatorApi.translateString("from Dixon to Trixon",form,st));
-		assertTrue(form.travelTo.equals("Trixon"));
-		assertTrue(form.startAt.equals("Dixon"));
+		assertTrue(form.travelTo.equals("trixon"));
+		assertTrue(form.startAt.equals("dixon"));
 		
 		form = new MockDirectionsForm();
 		st = new FileInputStream("res/raw/locator.pgf") ;
 		assertTrue(TranslatorApi.translateString("to Trixon",form,st));
-		assertTrue(form.travelTo.equals("Trixon"));
+		assertTrue(form.travelTo.equals("trixon"));
 		
 		form = new MockDirectionsForm();
 		st = new FileInputStream("res/raw/locator.pgf") ;	
 		assertTrue(TranslatorApi.translateString("I want to walk to Trixon",form,st));
 		assertTrue(form.byFoot);
-		
+			
 		form = new MockDirectionsForm();
 		st = new FileInputStream("res/raw/locator.pgf") ;
 		assertTrue(TranslatorApi.translateString("By Car",form,st));
@@ -88,6 +88,10 @@ public class translateStringTest extends TestCase {
 		assertTrue(TranslatorApi.translateString("By Foot",form,st));
 		assertTrue(form.byFoot);
 		
+		form = new MockDirectionsForm();
+		st = new FileInputStream("res/raw/locator.pgf") ;	
+		assertTrue(TranslatorApi.translateString("no, to Trixon",form,st));
+		assertTrue(form.travelTo.equals("trixon"));
 		
 	}
 	

@@ -105,6 +105,10 @@ public class TranslatorApi {
 		}else if (ident.equals("WalkTo")){
 			form.travelTo(fromDummy((FunApp)f.getArgs().get(0)));
 			form.byFoot();
+		}else if (ident.equals("NoTo2")){
+			form.noTo(fromDummy((FunApp)f.getArgs().get(0)));
+		}else if (ident.equals("NoTo")){
+			form.noTo(fromDummy((FunApp)f.getArgs().get(0)));
 		}
 		return true;
 	}

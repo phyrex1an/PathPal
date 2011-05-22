@@ -10,6 +10,9 @@ concrete LocatorEng of Locator = {
     JustGo i = {s = i.s} ;
 
     GoTo it = {s = "go" ++ it.s}  ;
+    NoTo it = {s = "no" ++ it.s} ;
+    NoTo2 it = {s = "no," ++ it.s} ;
+
     GoTo2 it = {s = it.s} ;
     FromTo i i' = {s = i.s ++ i'.s} ;
 
