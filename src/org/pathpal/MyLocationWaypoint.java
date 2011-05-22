@@ -34,4 +34,9 @@ public class MyLocationWaypoint implements Waypoint {
 		return new ArrayList<Question>();
 	}
 
+	public String name() {
+		// TODO Auto-generated method stub
+		return "bla";
+	}
+
 }

@@ -8,6 +8,7 @@ import org.grammaticalframework.UnknownLanguageException;
 import org.grammaticalframework.Linearizer.LinearizerException;
 import org.pathpal.translator.Fun;
 import org.pathpal.translator.FunApp;
+import org.pathpal.translator.FunString;
 
 import com.amelie.driving.DrivingDirections.Mode;
 
@@ -60,6 +61,7 @@ public class DirectionsForm {
 	public interface Waypoint {
 		public AddressPlace findAddress(SearchApi api) throws IOException;
 		public List<Question> questions(WaypointInfo w);
+		public String name();
 	}
 	
 	// A question direction towards the user with the intent to resolve some
@@ -83,6 +85,9 @@ public class DirectionsForm {
 		public List<Question> questions(WaypointInfo w) {
 			return new ArrayList<Question>();
 		}
+		public String name() {
+			return address;
+		}
 	}
 	
 	private class CurrentLocation implements Waypoint {
@@ -92,6 +97,10 @@ public class DirectionsForm {
 
 		public List<Question> questions(WaypointInfo w) {
 			return new ArrayList<Question>();
+		}
+
+		public String name() {
+			return "yourself";
 		}
 	}
 	
@@ -107,10 +116,22 @@ public class DirectionsForm {
 		}
 
 		public boolean answerQuestion(FunApp answer) {
-			// TODO Auto-generated method stub
+			System.out.println("Ident: " + answer.getIdent());
+			if (answer.getIdent().equals("ProbablyAnAddress")) {
+				String a = ((FunString) answer.getArgs().get(0)).getString();
+				System.out.println("Got answer: " +a);
+				for (AddressPlace address : this.waypoints) {
+					System.out.println("Testing against: " + address.description);
+					if (address.description.equals(a)) {
+						System.out.println("MATCH!");
+						this.waypointinfo.waypoint = new UnambiguousWaypoint(address);
+						return true;
+					}
+				}
+			}
 			return false;
 		}
-
+		
 		public FunStrings concreteQuestion() {
 			FunApp fa;
 			LinkedList<Fun> args = new LinkedList<Fun>();
@@ -155,6 +176,10 @@ public class DirectionsForm {
 			questions.add(new AmbiguousWaypointQuestion(waypoints, w));
 			return questions;
 		}
+
+		public String name() {
+			return waypoints.get(0).description;
+		}
 	}
 	
 	private class UnambiguousWaypoint implements Waypoint {
@@ -170,6 +195,10 @@ public class DirectionsForm {
 
 		public List<Question> questions(WaypointInfo w) {
 			return new ArrayList<Question>();
+		}
+
+		public String name() {
+			return address.description;
 		}
 	}
 	
@@ -192,7 +221,12 @@ public class DirectionsForm {
 		}
 
 		public FunStrings concreteQuestion() {
-			return new FunStrings(new FunApp("WalkOrCar", new LinkedList<Fun>()), new LinkedList<String>());
+			LinkedList<Fun> arg1 = new LinkedList<Fun>();
+			LinkedList<Fun> arg2 = new LinkedList<Fun>();
+			arg1.add(new FunApp("DString1", arg2));
+			List<String> args = new ArrayList<String>();
+			args.add(leg.destination.waypoint.name());
+			return new FunStrings(new FunApp("WalkOrCarTo", arg1), args);
 		}
 	}
 	
