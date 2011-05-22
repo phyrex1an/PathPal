@@ -21,6 +21,7 @@ abstract Locator = {
     GoTo2 : ToDummy -> GoItem;
     FromTo : FromDummy -> ToDummy -> GoItem;
     GoFrom : FromDummy -> GoItem;
+    GoByCar : GoItem ;
     GoByCarTo : ToDummy -> GoItem ;
     GoByCarFromTo : FromDummy -> ToDummy -> GoItem ;
     GoToVia : ToDummy -> ViaDummy -> GoItem; 

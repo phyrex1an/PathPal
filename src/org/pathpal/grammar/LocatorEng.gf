@@ -14,6 +14,7 @@ concrete LocatorEng of Locator = {
     FromTo i i' = {s = i.s ++ i'.s} ;
 
     GoFrom it = {s=it.s} ;
+    GoByCar = {s="go by car"} ;
     GoByCarTo  it = {s = "go by car" ++ it.s}  ;
     GoByCarFromTo i i' = {s = "go by car" ++ i.s ++ i'.s}  ;
 
